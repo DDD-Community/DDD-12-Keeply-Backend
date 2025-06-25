@@ -22,7 +22,8 @@ class SecurityConfig (
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .authorizeHttpRequests {
-                it.requestMatchers("/**").permitAll()
+                it.requestMatchers("/api/auth/**").permitAll()
+                it.anyRequest().authenticated()
             }
             .addFilterBefore(
                 JwtFilter(jwtProvider),

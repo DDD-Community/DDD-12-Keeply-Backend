@@ -17,7 +17,7 @@ class KakaoOauthController(
     @GetMapping("/kakao/callback")
     fun getKakaoOauthCallback(
         @ModelAttribute kakaoOauthCallback: KakaoOauthRequestDTO.KakaoOauthCallbackDTO
-    ) : ResponseEntity<KakaoOauthResponseDTO.LoginResponse> {
+    ) : ResponseEntity<JwtLoginResponseDTO> {
         return ResponseEntity.ok(kakaoOauthService.loginWithKakao(kakaoOauthCallback.code))
     }
 }
