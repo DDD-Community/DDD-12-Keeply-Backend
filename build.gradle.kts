@@ -30,12 +30,37 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    testImplementation("io.projectreactor:reactor-test")
+
+    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-impl:0.11.5")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    testImplementation("org.springframework.security:spring-security-test")
+
+
     compileOnly("org.projectlombok:lombok")
     runtimeOnly("com.mysql:mysql-connector-j")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+    // Google Cloud Vision API
+    implementation("com.google.cloud:google-cloud-vision:3.31.0")
+
+    // Google Cloud Natural Language API (v2)
+//    implementation("com.google.cloud:google-cloud-language:2.14.2")
+    implementation("com.google.cloud:google-cloud-language:2.64.0")
+
+    implementation("com.github.cretz.kastree:kastree-ast-psi:0.4.0")
+
+    implementation("com.h2database:h2")
+    implementation("io.netty:netty-resolver-dns-native-macos:4.1.121.Final:osx-x86_64")
+
+
 }
 
 kotlin {
@@ -53,3 +78,22 @@ allOpen {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+tasks.register<JavaExec>("runDetectText") {
+    group = "application"
+    description = "Run the DetectText main class"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("com.keeply.ocrtest.DetectText")
+
+    environment("GOOGLE_APPLICATION_CREDENTIALS", "/Users/jihwan/Downloads/cobalt-infinity-464512-u8-3f518df4f484.json")
+}
+
+tasks.register<JavaExec>("runDetectLabels") {
+    group = "application"
+    description = "Run the DetectLabels main class"
+    classpath = sourceSets.main.get().runtimeClasspath
+    mainClass.set("com.keeply.ocrtest.DetectLabels")
+
+    environment("GOOGLE_APPLICATION_CREDENTIALS", "/Users/jihwan/Downloads/cobalt-infinity-464512-u8-3f518df4f484.json")
+}
+

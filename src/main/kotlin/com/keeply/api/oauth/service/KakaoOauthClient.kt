@@ -14,7 +14,7 @@ import java.nio.charset.Charset
 @Component
 class KakaoOauthClient(
     private val webClient: WebClient,
-    @Value("kakao.client.id")
+    @Value("\${kakao.client.id}")
     private val kakaoClientId: String
 ) {
     fun getUserAccessToken(code: String): KakaoResponseDTO.KakaoGetTokenDTO {

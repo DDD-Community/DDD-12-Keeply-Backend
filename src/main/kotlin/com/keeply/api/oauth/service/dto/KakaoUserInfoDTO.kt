@@ -19,7 +19,7 @@ class KakaoUserInfoDTO {
     )
 
     data class Profile(
-        val nickName: String,
+        val nickname: String,
         val thumbnail_image_url: String,
         val profile_image_url: String
     )
