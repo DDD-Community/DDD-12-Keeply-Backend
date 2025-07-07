@@ -1,1 +1,23 @@
-spring.application.name=keeply
+spring:
+  application:
+    name: keeply
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+
+kakao:
+  client:
+    id: 5aaaa5bc68e0ff4071da1a4cc772e695
+    secret: 2622bfcc7f0d3ab872d0d350c0676b79
+
+jwt:
+  secret: thisIsASecretKeyWithEnoughLength123!
+  access-token:
+    expiration: 3600
+  refresh-token:
+    expiration: 1209600  # 3600 * 24 * 14
