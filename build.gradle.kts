@@ -21,6 +21,10 @@ configurations {
     }
 }
 
+tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+    mainClass.set("com.keeply.KeeplyApplicationKt")
+}
+
 repositories {
     mavenCentral()
 }
