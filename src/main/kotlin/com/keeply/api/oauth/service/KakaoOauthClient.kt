@@ -25,7 +25,7 @@ class KakaoOauthClient(
             .body(
                 BodyInserters.fromFormData("grant_type", "authorization_code")
                     .with("client_id", kakaoClientId)
-                    .with("redirect_uri", "http://localhost:8080/auth/kakao/callback")
+                    .with("redirect_uri", "http://13.124.238.218:8080/auth/kakao/callback")
                     .with("code", code)
             )
             .retrieve()
