@@ -17,12 +17,21 @@ class SecurityConfig (
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
             .httpBasic { it.disable() }
-            .csrf { it.disable() }
+            .headers {
+                it.frameOptions {
+                    it.disable()
+                }
+            }
+            .csrf {
+                it.disable()
+                it.ignoringRequestMatchers("/h2-console/**")
+            }
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .authorizeHttpRequests {
                 it.requestMatchers("**").permitAll()
+                it.requestMatchers("/h2-console/**").permitAll()
                 it.anyRequest().authenticated()
             }
             .addFilterBefore(
