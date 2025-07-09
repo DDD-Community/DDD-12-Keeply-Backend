@@ -1,6 +1,7 @@
 package com.keeply.domain.image.entity
 
 import com.keeply.domain.folder.entity.Folder
+import com.keeply.domain.tag.entity.Tag
 import com.keeply.global.entity.BaseTimeEntity
 import jakarta.persistence.*
 
@@ -9,8 +10,13 @@ class Image(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null,
         @Column(nullable = false)
-        val url: String,
+        val presignedUrl: String,
+
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "folder_id")
-        val folder: Folder
+        val folder: Folder,
+
+        @ManyToOne
+        @JoinColumn(name = "tag_id")
+        val tag: Tag
 ) : BaseTimeEntity()

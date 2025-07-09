@@ -29,7 +29,8 @@ class KakaoOauthService (
 
         return JwtLoginResponseDTO(
             jwtProvider.generateAccessToken(user),
-            jwtProvider.generateRefreshToken(user)
+            jwtProvider.generateRefreshToken(user),
+            user
         )
     }
 }

@@ -1,5 +1,7 @@
 package com.keeply.domain.folder.entity
 
+import com.keeply.domain.image.entity.Image
+import com.keeply.domain.user.entity.User
 import com.keeply.global.entity.BaseTimeEntity
 import jakarta.persistence.*
 
@@ -8,5 +10,12 @@ class Folder(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null,
         @Column(nullable = false)
-        val name: String
+        val name: String,
+
+        @ManyToOne
+        @JoinColumn(name = "user_id")
+        val user: User,
+
+        @OneToMany(mappedBy = "folder", cascade = [CascadeType.ALL])
+        val images: List<Image> = mutableListOf()
 ) : BaseTimeEntity()
