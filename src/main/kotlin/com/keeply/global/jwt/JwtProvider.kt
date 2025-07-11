@@ -73,9 +73,10 @@ class JwtProvider (
     fun getAuthentication(accessToken: String): Authentication {
         val claims = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken)
 
-        val userId = claims.body.subject.toLong()
+        val userId = claims.body.subject.toLongOrNull()
             ?: throw RuntimeException("잘못된 토큰입니다.")
 
-        return UsernamePasswordAuthenticationToken(userId, null, null)
+        val userDetails = CustomUserDetails(userId = userId)
+        return UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
     }
 }
