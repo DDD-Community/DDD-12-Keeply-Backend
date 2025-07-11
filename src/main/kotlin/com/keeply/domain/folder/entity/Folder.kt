@@ -10,7 +10,7 @@ class Folder(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null,
         @Column(nullable = false)
-        val name: String,
+        var name: String,
 
         @ManyToOne
         @JoinColumn(name = "user_id")
@@ -18,4 +18,8 @@ class Folder(
 
         @OneToMany(mappedBy = "folder", cascade = [CascadeType.ALL])
         val images: List<Image> = mutableListOf()
-) : BaseTimeEntity()
+) : BaseTimeEntity() {
+        fun updateFolderName(folderName: String) {
+                this.name = folderName
+        }
+}
