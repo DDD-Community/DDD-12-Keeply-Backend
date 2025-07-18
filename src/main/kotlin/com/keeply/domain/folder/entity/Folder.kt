@@ -12,6 +12,9 @@ class Folder(
         @Column(nullable = false)
         var name: String,
 
+        @Column(nullable = false)
+        var color: String,
+
         @ManyToOne
         @JoinColumn(name = "user_id")
         val user: User,

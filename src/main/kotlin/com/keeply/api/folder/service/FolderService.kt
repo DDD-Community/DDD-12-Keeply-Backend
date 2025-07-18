@@ -1,6 +1,8 @@
 package com.keeply.api.folder.service
 
+import com.keeply.api.folder.dto.FolderRequestDTO
 import com.keeply.api.folder.dto.FolderResponseDTO
+import com.keeply.api.folder.validator.FolderValidator
 import com.keeply.domain.folder.entity.Folder
 import com.keeply.domain.folder.repository.FolderRepository
 import com.keeply.domain.user.entity.User
@@ -14,30 +16,31 @@ import org.springframework.stereotype.Service
 @Transactional
 class FolderService (
     private val userRepository: UserRepository,
-    private val folderRepository: FolderRepository
+    private val folderRepository: FolderRepository,
+    private val folderValidator: FolderValidator
 ) {
-    fun createFolder(userId: Long, folderName: String): ApiResponse<FolderResponseDTO.Folder> {
+    fun createFolder(userId: Long, requestDTO: FolderRequestDTO.Create): ApiResponse<FolderResponseDTO.Folder> {
+        folderValidator.validateCreate(requestDTO)
+
+        val folderName = requestDTO.folderName
+        val color = requestDTO.color
+
         val user = getUser(userId)
-            ?: return ApiResponse(
-                success = false,
-                message = "존재하지 않는 유저입니다."
-            )
+            ?: throw Exception("존재하지 않는 유저입니다.")
 
         var folder = getFolderByUserIdAndFolderName(userId, folderName)
         if(folder != null) {
-            return ApiResponse(
-                success = false,
-                message = "이미 존재하는 폴더입니다."
-            )
+            throw Exception("이미 존재하는 폴더입니다.")
         }
 
-        folder = Folder(name = folderName, user = user)
+        folder = Folder(name = folderName, color = color, user = user)
         folderRepository.save(folder)
 
         return ApiResponse(
             success = true,
             data = FolderResponseDTO.Folder(
                 folder.id,
+                folder.color,
                 folder.name
             )
         )
@@ -46,7 +49,7 @@ class FolderService (
     fun getFolders(userId: Long): ApiResponse<FolderResponseDTO.FolderList> {
         val folderList = getFolderListByUserId(userId)
         val result = folderList.map { folder ->
-            FolderResponseDTO.Folder(folder.id, folder.name)
+            FolderResponseDTO.Folder(folder.id, folder.color, folder.name)
         }
         return ApiResponse<FolderResponseDTO.FolderList>(
             success = true,
@@ -59,10 +62,7 @@ class FolderService (
     fun getFolderImages(userId: Long, folderId: Long): ApiResponse<FolderResponseDTO.FolderImages> {
         val folder = getFolderByUserIdAndFolderId(userId, folderId)
         if(folder == null) {
-            return ApiResponse(
-                success = false,
-                message = "존재하지 않는 폴더입니다."
-            )
+            throw Exception("존재하지 않는 폴더입니다.")
         }
 
         val result = folder.images.map { image ->
@@ -80,16 +80,14 @@ class FolderService (
     fun updateFolder(userId: Long, folderId: Long, folderName: String): ApiResponse<FolderResponseDTO.Folder> {
         val folder = getFolderByUserIdAndFolderId(userId, folderId)
         if(folder == null) {
-            return ApiResponse(
-                success = false,
-                message = "존재하지 않는 폴더입니다."
-            )
+            throw Exception("존재하지 않는 폴더입니다.")
         }
         folder.updateFolderName(folderName)
         return ApiResponse<FolderResponseDTO.Folder>(
             success = true,
             data = FolderResponseDTO.Folder(
                 folder.id,
+                folder.color,
                 folder.name
             )
         )
@@ -98,10 +96,7 @@ class FolderService (
     fun deleteFolder(userId: Long, folderId: Long): ApiResponse<Message> {
         val folder = getFolderByUserIdAndFolderId(userId, folderId)
         if(folder == null) {
-            return ApiResponse(
-                success = false,
-                message = "존재하지 않는 폴더입니다."
-            )
+            throw Exception("존재하지 않는 폴더입니다.")
         }
         folderRepository.delete(folder)
         return ApiResponse<Message>(

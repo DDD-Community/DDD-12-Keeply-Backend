@@ -28,10 +28,15 @@ class FolderController (
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @RequestBody requestDTO: FolderRequestDTO.Create
     ): ResponseEntity<ApiResponse<FolderResponseDTO.Folder>> {
-        val apiResponse = folderService.createFolder(userDetails.userId, requestDTO.folderName)
-        if(apiResponse.success) {
+        try {
+            val apiResponse = folderService.createFolder(userDetails.userId, requestDTO)
+
             return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse)
-        } else {
+        } catch (e: Exception) {
+            val apiResponse = ApiResponse<FolderResponseDTO.Folder>(
+                success = false,
+                message = e.message
+            )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
     }
@@ -40,10 +45,15 @@ class FolderController (
     fun getFolders(
         @AuthenticationPrincipal userDetails: CustomUserDetails
     ): ResponseEntity<ApiResponse<FolderResponseDTO.FolderList>> {
-        val apiResponse = folderService.getFolders(userDetails.userId)
-        if(apiResponse.success) {
+        try {
+            val apiResponse = folderService.getFolders(userDetails.userId)
+
             return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } else {
+        } catch (e: Exception) {
+            val apiResponse = ApiResponse<FolderResponseDTO.FolderList>(
+                success = false,
+                message = e.message
+            )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
     }
@@ -53,10 +63,15 @@ class FolderController (
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @PathVariable folderId: Long
     ): ResponseEntity<ApiResponse<FolderResponseDTO.FolderImages>> {
-        val apiResponse = folderService.getFolderImages(userDetails.userId, folderId)
-        if(apiResponse.success) {
+        try {
+            val apiResponse = folderService.getFolderImages(userDetails.userId, folderId)
+
             return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } else {
+        } catch (e: Exception) {
+            val apiResponse = ApiResponse<FolderResponseDTO.FolderImages>(
+                success = false,
+                message = e.message
+            )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
     }
@@ -67,10 +82,15 @@ class FolderController (
         @PathVariable folderId: Long,
         @RequestBody requestDTO : FolderRequestDTO.Update
     ): ResponseEntity<ApiResponse<FolderResponseDTO.Folder>> {
-        val apiResponse = folderService.updateFolder(userDetails.userId, folderId, requestDTO.folderName)
-        if(apiResponse.success) {
+        try {
+            val apiResponse = folderService.updateFolder(userDetails.userId, folderId, requestDTO.folderName)
+
             return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } else {
+        }catch (e: Exception) {
+            val apiResponse = ApiResponse<FolderResponseDTO.Folder>(
+                success = false,
+                message = e.message
+            )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
     }
@@ -80,10 +100,15 @@ class FolderController (
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @PathVariable folderId: Long
     ): ResponseEntity<ApiResponse<Message>> {
-        val apiResponse = folderService.deleteFolder(userDetails.userId, folderId)
-        if(apiResponse.success) {
+        try {
+            val apiResponse = folderService.deleteFolder(userDetails.userId, folderId)
+
             return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } else {
+        } catch (e: Exception) {
+            val apiResponse = ApiResponse<Message>(
+                success = false,
+                message = e.message
+            )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
     }

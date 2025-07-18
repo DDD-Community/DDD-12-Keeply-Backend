@@ -3,7 +3,8 @@ package com.keeply.api.folder.dto
 class FolderResponseDTO {
     data class Folder(
         val folderId: Long? = null,
-        val folderName: String
+        val folderName: String,
+        val color: String
     )
 
     data class FolderList(
