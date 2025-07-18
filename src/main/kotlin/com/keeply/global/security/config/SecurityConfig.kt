@@ -1,7 +1,8 @@
-package com.keeply.global.config
+package com.keeply.global.security.config
 
-import com.keeply.global.jwt.JwtFilter
-import com.keeply.global.jwt.JwtProvider
+import com.keeply.global.security.JwtFilter
+import com.keeply.global.security.JwtProvider
+import com.keeply.global.security.WhiteList
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -18,20 +19,21 @@ class SecurityConfig (
         http
             .httpBasic { it.disable() }
             .headers {
-                it.frameOptions {
-                    it.disable()
-                }
+                it.frameOptions { it.disable() }
             }
             .csrf {
                 it.disable()
-                it.ignoringRequestMatchers("/h2-console/**")
+                it.ignoringRequestMatchers(
+                    *WhiteList.ALL
+                )
             }
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .authorizeHttpRequests {
-                it.requestMatchers("**").permitAll()
-                it.requestMatchers("/h2-console/**").permitAll()
+                it.requestMatchers(
+                    *WhiteList.ALL
+                ).permitAll()
                 it.anyRequest().authenticated()
             }
             .addFilterBefore(

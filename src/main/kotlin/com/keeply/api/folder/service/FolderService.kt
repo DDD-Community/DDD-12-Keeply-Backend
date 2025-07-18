@@ -66,7 +66,7 @@ class FolderService (
         }
 
         val result = folder.images.map { image ->
-            FolderResponseDTO.ImageInfo(image.id, image.presignedUrl, image.tag.name)
+            FolderResponseDTO.ImageInfo(image.id, image.s3Key, image.tag.name)
         }
 
         return ApiResponse<FolderResponseDTO.FolderImages>(

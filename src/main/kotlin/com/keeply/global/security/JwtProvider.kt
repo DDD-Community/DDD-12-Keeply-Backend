@@ -1,4 +1,4 @@
-package com.keeply.global.jwt
+package com.keeply.global.security
 
 import com.keeply.domain.user.entity.User
 import io.jsonwebtoken.Claims

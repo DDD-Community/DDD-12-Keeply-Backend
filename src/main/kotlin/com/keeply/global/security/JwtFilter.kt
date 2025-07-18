@@ -1,4 +1,4 @@
-package com.keeply.global.jwt
+package com.keeply.global.security
 
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
@@ -6,6 +6,7 @@ import jakarta.servlet.ServletResponse
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.GenericFilterBean
 import kotlin.text.startsWith
 import kotlin.text.substring
@@ -18,24 +19,34 @@ class JwtFilter(
         response: ServletResponse,
         filterChain: FilterChain
     ) {
+        val httpRequest = request as HttpServletRequest
+        val requestURI = httpRequest.requestURI
+        val pathMatcher = AntPathMatcher()
 
-        val jwtAccessToken = resolveToken(request as HttpServletRequest)
+        if (WhiteList.ALL.any { pathMatcher.match(it, requestURI) }) {
+            filterChain.doFilter(request, response)
+            return
+        }
 
-        if(jwtAccessToken != null && jwtProvider.validateToken(jwtAccessToken)) {
+        val jwtAccessToken = resolveToken(httpRequest)
+
+        if (jwtAccessToken != null && jwtProvider.validateToken(jwtAccessToken)) {
             val authentication = jwtProvider.getAuthentication(jwtAccessToken)
             SecurityContextHolder.getContext().authentication = authentication
         } else {
-            var httpResponse = response as HttpServletResponse
+            val httpResponse = response as HttpServletResponse
             httpResponse.status = 401
             httpResponse.contentType = "application/json"
             httpResponse.characterEncoding = "UTF-8"
-            httpResponse.writer.write("""
+            httpResponse.writer.write(
+                """
                 {
                     "success": false,
                     "message": "토큰이 없거나 유효하지 않습니다. 다시 로그인해주세요.",
                     "data": null
                 }
-            """.trimIndent())
+            """.trimIndent()
+            )
             return
         }
 

@@ -7,7 +7,7 @@ import com.keeply.api.login.client.KakaoWebClient
 import com.keeply.domain.user.entity.User
 import com.keeply.domain.user.repository.UserRepository
 import com.keeply.global.dto.ApiResponse
-import com.keeply.global.jwt.JwtProvider
+import com.keeply.global.security.JwtProvider
 import org.springframework.stereotype.Service
 
 @Service

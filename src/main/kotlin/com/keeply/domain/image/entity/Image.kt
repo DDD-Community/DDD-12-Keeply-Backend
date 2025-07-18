@@ -9,14 +9,28 @@ import jakarta.persistence.*
 class Image(
         @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
         val id: Long? = null,
-        @Column(nullable = false)
-        val presignedUrl: String,
+
+        var insight: String? = null,
+        var s3Key: String? = null,
 
         @ManyToOne(fetch = FetchType.LAZY)
         @JoinColumn(name = "folder_id")
-        val folder: Folder,
+        var folder: Folder? = null,
 
         @ManyToOne
         @JoinColumn(name = "tag_id")
-        val tag: Tag
-) : BaseTimeEntity()
+        var tag: Tag
+) : BaseTimeEntity() {
+//        fun setInsight(insight: String?) {
+//                this.insight = insight
+//        }
+//        fun setS3Key(s3Key: String?) {
+//                this.s3Key = s3Key
+//        }
+//        fun setFolder(folder: Folder?) {
+//                this.folder = folder
+//        }
+//        fun setTag(tag: Tag) {
+//                this.tag = tag
+//        }
+}
