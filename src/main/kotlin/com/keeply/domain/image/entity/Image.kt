@@ -20,17 +20,4 @@ class Image(
         @ManyToOne
         @JoinColumn(name = "tag_id")
         var tag: Tag
-) : BaseTimeEntity() {
-//        fun setInsight(insight: String?) {
-//                this.insight = insight
-//        }
-//        fun setS3Key(s3Key: String?) {
-//                this.s3Key = s3Key
-//        }
-//        fun setFolder(folder: Folder?) {
-//                this.folder = folder
-//        }
-//        fun setTag(tag: Tag) {
-//                this.tag = tag
-//        }
-}
+) : BaseTimeEntity()

@@ -19,8 +19,8 @@ class Folder(
         @JoinColumn(name = "user_id")
         val user: User,
 
-        @OneToMany(mappedBy = "folder", cascade = [CascadeType.ALL])
-        val images: List<Image> = mutableListOf()
+        @OneToMany(mappedBy = "folder", cascade = [CascadeType.ALL], orphanRemoval = true)
+        val images: MutableList<Image> = mutableListOf()
 ) : BaseTimeEntity() {
         fun updateFolderName(folderName: String) {
                 this.name = folderName

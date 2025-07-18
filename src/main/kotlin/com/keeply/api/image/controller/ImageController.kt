@@ -21,7 +21,6 @@ class ImageController (
     private val imageService: ImageService
 ) {
 
-    @Operation(summary = "보안 테스트 API", security = [SecurityRequirement(name = "bearerAuth")])
     @PostMapping
     fun saveImage(
         @AuthenticationPrincipal userDetails: CustomUserDetails,

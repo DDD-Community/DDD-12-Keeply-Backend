@@ -1,5 +1,6 @@
 package com.keeply.global.security
 
+import com.keeply.global.common.Constants
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
 import jakarta.servlet.ServletResponse
@@ -23,7 +24,7 @@ class JwtFilter(
         val requestURI = httpRequest.requestURI
         val pathMatcher = AntPathMatcher()
 
-        if (WhiteList.ALL.any { pathMatcher.match(it, requestURI) }) {
+        if (Constants.WhiteList.ALL.any { pathMatcher.match(it, requestURI) }) {
             filterChain.doFilter(request, response)
             return
         }

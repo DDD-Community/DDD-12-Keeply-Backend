@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service
 
 @Service
 @Transactional
-@Slf4j
 class ImageService (
     private val imageRepository: ImageRepository,
     private val folderRepository: FolderRepository,
@@ -29,8 +28,6 @@ class ImageService (
         val imageInsight = requestDTO.imageInsight
         val folderId = requestDTO.folderId
         val tagName = requestDTO.tag
-
-        println("$imageInsight")
 
         val folder = folderRepository.findByUserIdAndId(userId, folderId)
             ?: throw Exception("폴더를 찾을 수 없습니다.")
@@ -76,10 +73,6 @@ class ImageService (
 
         val tag = tagRepository.findByName(tagName)
             ?: tagRepository.save(Tag(name = tagName))
-
-//        image.setInsight(imageInsight)
-//        image.setFolder(folder)
-//        image.setTag(tag)
 
         image.insight = imageInsight
         image.folder = folder
