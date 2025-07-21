@@ -13,10 +13,11 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "users")
 class User(
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    val id: Long? = null,
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
-    val kakaoId: Long,
+    val id: Long,
     val nickname: String,
     val email: String,
     val profileImageUrl: String,
@@ -27,13 +28,6 @@ class User(
 //    @JsonManagedReference
     val folders: List<Folder> = mutableListOf()
 ) : BaseTimeEntity() {
-//    fun addImageInfo(imageInfo: S3ImageInfo) {
-//        presignedUrls.add(imageInfo)
-//    }
-//
-//    fun removeImageInfo(imageInfo: S3ImageInfo) {
-//        presignedUrls.remove(imageInfo)
-//    }
 
     fun increaseStorage(fileSize: Long) {
         usedStorageSize += fileSize
