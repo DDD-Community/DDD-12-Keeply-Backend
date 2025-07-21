@@ -26,7 +26,7 @@ class FolderController (
     @PostMapping
     fun createFolder(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @RequestBody requestDTO: FolderRequestDTO.Create
+        @RequestBody requestDTO: FolderRequestDTO.CreateRequestDTO
     ): ResponseEntity<ApiResponse<FolderResponseDTO.Folder>> {
         try {
             val apiResponse = folderService.createFolder(userDetails.userId, requestDTO)
@@ -80,10 +80,10 @@ class FolderController (
     fun updateFolder(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @PathVariable folderId: Long,
-        @RequestBody requestDTO : FolderRequestDTO.Update
+        @RequestBody requestDTO : FolderRequestDTO.UpdateRequestDTO
     ): ResponseEntity<ApiResponse<FolderResponseDTO.Folder>> {
         try {
-            val apiResponse = folderService.updateFolder(userDetails.userId, folderId, requestDTO.folderName)
+            val apiResponse = folderService.updateFolder(userDetails.userId, folderId, requestDTO)
 
             return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
         }catch (e: Exception) {
@@ -112,5 +112,4 @@ class FolderController (
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
     }
-
 }

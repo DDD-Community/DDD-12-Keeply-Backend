@@ -9,6 +9,7 @@ import com.keeply.domain.user.entity.User
 import com.keeply.domain.user.repository.UserRepository
 import com.keeply.global.dto.ApiResponse
 import com.keeply.global.dto.Message
+import com.keeply.global.s3.S3Service
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 
@@ -17,9 +18,10 @@ import org.springframework.stereotype.Service
 class FolderService (
     private val userRepository: UserRepository,
     private val folderRepository: FolderRepository,
-    private val folderValidator: FolderValidator
+    private val folderValidator: FolderValidator,
+    private val s3Service: S3Service
 ) {
-    fun createFolder(userId: Long, requestDTO: FolderRequestDTO.Create): ApiResponse<FolderResponseDTO.Folder> {
+    fun createFolder(userId: Long, requestDTO: FolderRequestDTO.CreateRequestDTO): ApiResponse<FolderResponseDTO.Folder> {
         folderValidator.validateCreate(requestDTO)
 
         val folderName = requestDTO.folderName
@@ -66,7 +68,7 @@ class FolderService (
         }
 
         val result = folder.images.map { image ->
-            FolderResponseDTO.ImageInfo(image.id, image.s3Key, image.tag.name)
+            FolderResponseDTO.ImageInfo(image.id, s3Service.generatePresignedUrl(image.s3Key!!), image.tag!!.name)
         }
 
         return ApiResponse<FolderResponseDTO.FolderImages>(
@@ -77,12 +79,13 @@ class FolderService (
         )
     }
 
-    fun updateFolder(userId: Long, folderId: Long, folderName: String): ApiResponse<FolderResponseDTO.Folder> {
+    fun updateFolder(userId: Long, folderId: Long, requestDTO: FolderRequestDTO.UpdateRequestDTO): ApiResponse<FolderResponseDTO.Folder> {
+        folderValidator.validateUpdate(requestDTO)
         val folder = getFolderByUserIdAndFolderId(userId, folderId)
         if(folder == null) {
             throw Exception("존재하지 않는 폴더입니다.")
         }
-        folder.updateFolderName(folderName)
+        folder.updateFolderName(requestDTO.folderName)
         return ApiResponse<FolderResponseDTO.Folder>(
             success = true,
             data = FolderResponseDTO.Folder(
