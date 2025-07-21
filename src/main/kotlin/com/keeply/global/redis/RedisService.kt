@@ -9,7 +9,7 @@ import java.util.Base64
 
 @Service
 class RedisService(
-    private val redisTemplate: RedisTemplate<String, Any>
+    private val redisTemplate: RedisTemplate<String, CachedOcrImage>
 ) {
     private val imageTTL: Duration = Duration.ofMinutes(10)
 
@@ -19,8 +19,8 @@ class RedisService(
         redisTemplate.opsForValue().set("image:$imageId", value, imageTTL)
     }
 
-    fun getCachedImage(imageId: String): CachedOcrImage {
-        val cachedOcrImage = redisTemplate.opsForValue().get("image:$imageId") as CachedOcrImage?
+    fun getCachedImage(imageId: String?): CachedOcrImage {
+        val cachedOcrImage = redisTemplate.opsForValue().get("image:$imageId")
             ?: throw(Exception("이미지가 만료되었습니다."))
         return cachedOcrImage
     }
