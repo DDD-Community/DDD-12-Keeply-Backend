@@ -5,6 +5,7 @@ import com.keeply.api.folder.dto.FolderResponseDTO
 import com.keeply.api.folder.validator.FolderValidator
 import com.keeply.domain.folder.entity.Folder
 import com.keeply.domain.folder.repository.FolderRepository
+import com.keeply.domain.image.service.ImageDomainService
 import com.keeply.domain.user.entity.User
 import com.keeply.domain.user.repository.UserRepository
 import com.keeply.global.dto.ApiResponse
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service
 class FolderService (
     private val userRepository: UserRepository,
     private val folderRepository: FolderRepository,
+    private val imageDomainService: ImageDomainService,
     private val folderValidator: FolderValidator,
     private val s3Service: S3Service
 ) {
@@ -85,7 +87,8 @@ class FolderService (
         if(folder == null) {
             throw Exception("존재하지 않는 폴더입니다.")
         }
-        folder.updateFolderName(requestDTO.folderName)
+        folder.name = requestDTO.folderName
+        folder.color = requestDTO.color
         return ApiResponse<FolderResponseDTO.Folder>(
             success = true,
             data = FolderResponseDTO.Folder(
@@ -101,6 +104,7 @@ class FolderService (
         if(folder == null) {
             throw Exception("존재하지 않는 폴더입니다.")
         }
+        imageDomainService.deleteAllImagesInFolder(folder)
         folderRepository.delete(folder)
         return ApiResponse<Message>(
             success = true,

@@ -24,5 +24,7 @@ class Image(
 
         @ManyToOne
         @JoinColumn(name = "tag_id")
-        var tag: Tag? = null
+        var tag: Tag? = null,
+
+        var size: Long = 0
 ) : BaseTimeEntity()

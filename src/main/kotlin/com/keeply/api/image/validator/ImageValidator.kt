@@ -38,4 +38,12 @@ class ImageValidator {
             throw IllegalArgumentException("folderId는 0보다 커야 합니다.")
         }
     }
+    fun validateDeleteRequest(userId: Long, imageId: Long) {
+        if(imageId <= 0) {
+            throw IllegalArgumentException("imgaeId는 0보다 커야 합니다.")
+        }
+        if(userId <= 0) {
+            throw IllegalArgumentException("userId는 0보다 커야 합니다.")
+        }
+    }
 }

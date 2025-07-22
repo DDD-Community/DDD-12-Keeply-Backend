@@ -21,8 +21,4 @@ class Folder(
 
         @OneToMany(mappedBy = "folder", cascade = [CascadeType.ALL], orphanRemoval = true)
         val images: MutableList<Image> = mutableListOf()
-) : BaseTimeEntity() {
-        fun updateFolderName(folderName: String) {
-                this.name = folderName
-        }
-}
+) : BaseTimeEntity()

@@ -7,15 +7,17 @@ import com.keeply.domain.folder.entity.Folder
 import com.keeply.domain.folder.repository.FolderRepository
 import com.keeply.domain.image.entity.Image
 import com.keeply.domain.image.repository.ImageRepository
+import com.keeply.domain.image.service.ImageDomainService
 import com.keeply.domain.tag.entity.Tag
 import com.keeply.domain.tag.repository.TagRepository
 import com.keeply.domain.user.entity.User
 import com.keeply.domain.user.repository.UserRepository
 import com.keeply.global.dto.ApiResponse
+import com.keeply.global.dto.Message
 import com.keeply.global.redis.RedisService
 import com.keeply.global.s3.S3Service
-import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.util.Base64
 
@@ -23,6 +25,7 @@ import java.util.Base64
 @Transactional
 class ImageService (
     private val imageRepository: ImageRepository,
+    private val imageDomainService: ImageDomainService,
     private val folderRepository: FolderRepository,
     private val userRepository: UserRepository,
     private val tagRepository: TagRepository,
@@ -47,18 +50,13 @@ class ImageService (
         val base64Image = cachedOcrImage.base64Image
         val detectedText = cachedOcrImage.detectedText
 
-        var image = Image(
+        val image = imageDomainService.saveImage(
             insight = imageInsight,
             user = user,
             folder = folder,
-            tag = tag
+            tag = tag,
+            base64Image = base64Image,
         )
-
-        imageRepository.save(image)
-
-        val s3Key = s3Service.uploadBase64Image(userId, image.id!!, base64Image)
-
-        image.s3Key = s3Key
 
         return ApiResponse<ImageResponseDTO.SaveResponseDTO> (
             success = true,
@@ -96,17 +94,15 @@ class ImageService (
 
     fun saveUncategorizedImage(userId: Long, file: MultipartFile): ApiResponse<ImageResponseDTO.SaveResponseDTO> {
         imageValidator.validateImage(file)
+        val base64Image = Base64.getEncoder().encodeToString(file.bytes)
         val user = getUser(userId)
-        val image = Image(
+        val image = imageDomainService.saveImage(
             insight = null,
             user = user,
             folder = null,
-            tag = null
+            tag = null,
+            base64Image = base64Image,
         )
-        imageRepository.save(image)
-        val base64Image = Base64.getEncoder().encodeToString(file.bytes)
-        val s3Key = s3Service.uploadBase64Image(userId, image.id!!, base64Image)
-        image.s3Key = s3Key
         return ApiResponse<ImageResponseDTO.SaveResponseDTO>(
             success = true,
             data = ImageResponseDTO.SaveResponseDTO(
@@ -125,6 +121,20 @@ class ImageService (
             data = ImageResponseDTO.MoveImageResponseDTO(
                 imageId = image.id!!,
                 folderId = folder.id!!,
+            )
+        )
+    }
+
+    fun deleteImage(userId: Long, imageId: Long) : ApiResponse<Message> {
+        imageValidator.validateDeleteRequest(userId,imageId)
+        val image = getImage(imageId, userId)
+        val user = getUser(userId)
+        imageDomainService.deleteImage(user, image)
+
+        return ApiResponse<Message>(
+            success = true,
+            data = Message(
+                "$userId 유저의 $imageId 가 삭제되었습니다."
             )
         )
     }

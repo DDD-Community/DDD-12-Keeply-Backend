@@ -4,8 +4,6 @@ import com.keeply.domain.folder.entity.Folder
 import com.keeply.global.entity.BaseTimeEntity
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
@@ -13,9 +11,6 @@ import jakarta.persistence.Table
 @Entity
 @Table(name = "users")
 class User(
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    val id: Long? = null,
     @Id
     val id: Long,
     val nickname: String,
@@ -23,17 +18,10 @@ class User(
     val profileImageUrl: String,
     val thumbnailImageUrl: String,
     var usedStorageSize: Long = 0,
+    var storageLimit: Long = 1L * 1024 * 1024 * 1024,
+    var fcmToken: String? = null,
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
-//    @JsonManagedReference
     val folders: List<Folder> = mutableListOf()
-) : BaseTimeEntity() {
 
-    fun increaseStorage(fileSize: Long) {
-        usedStorageSize += fileSize
-    }
-
-    fun decreaseStorage(fileSize: Long) {
-        usedStorageSize -= fileSize
-    }
-}
+) : BaseTimeEntity()

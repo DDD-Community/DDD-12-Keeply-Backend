@@ -4,11 +4,13 @@ import com.keeply.api.image.dto.ImageRequestDTO
 import com.keeply.api.image.dto.ImageResponseDTO
 import com.keeply.api.image.service.ImageService
 import com.keeply.global.dto.ApiResponse
+import com.keeply.global.dto.Message
 import com.keeply.global.security.CustomUserDetails
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -66,7 +68,7 @@ class ImageController (
         }
     }
 
-    @PatchMapping("/{imageId}/move")
+    @PatchMapping("/{imageId}")
     @Operation(summary = "이미지를 다른 폴더로 이동")
     fun moveImageToAnotherFolder(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
@@ -78,6 +80,24 @@ class ImageController (
             return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
         } catch (e: Exception) {
             val apiResponse = ApiResponse<ImageResponseDTO.MoveImageResponseDTO>(
+                success = false,
+                message = e.message
+            )
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
+        }
+    }
+
+    @DeleteMapping("/{imageId}")
+    @Operation(summary = "이미지 삭제 API")
+    fun deleteImage(
+        @AuthenticationPrincipal userDetails: CustomUserDetails,
+        @PathVariable imageId: Long
+    ): ResponseEntity<ApiResponse<Message>> {
+        try{
+            val apiResponse = imageService.deleteImage(userDetails.userId, imageId)
+            return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
+        } catch (e: Exception) {
+            val apiResponse = ApiResponse<Message>(
                 success = false,
                 message = e.message
             )
