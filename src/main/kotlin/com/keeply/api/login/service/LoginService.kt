@@ -1,6 +1,7 @@
 package com.keeply.api.login.service
 
 import com.keeply.api.login.dto.KakaoUserInfoDTO
+import com.keeply.api.login.dto.KakaoUserInfoDTO.kakaoUserInfo
 import com.keeply.api.login.dto.LoginResponseDTO
 import com.keeply.domain.user.entity.User
 import com.keeply.domain.user.repository.UserRepository
@@ -15,6 +16,7 @@ class LoginService (
 ) {
     fun loginAndRegister(requestDTO: KakaoUserInfoDTO.kakaoUserInfo): ApiResponse<LoginResponseDTO> {
         val user: User = findOrSaveUserWithKakao(requestDTO)
+        user.fcmToken = requestDTO.fcmToken
         val jwtAccessToken = jwtProvider.generateAccessToken(user)
         val jwtRefreshToken = jwtProvider.generateRefreshToken(user)
         return ApiResponse<LoginResponseDTO> (

@@ -1,12 +1,15 @@
 package com.keeply.api.login.dto
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
 class KakaoUserInfoDTO {
     data class kakaoUserInfo(
         val id: Long,
+        @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         val connected_at: LocalDateTime,
-        val kakao_account: KakaoAccount
+        val kakao_account: KakaoAccount,
+        val fcmToken: String
     )
 
     data class KakaoAccount (
