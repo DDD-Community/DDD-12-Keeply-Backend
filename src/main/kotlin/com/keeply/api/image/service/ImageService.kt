@@ -15,7 +15,6 @@ import com.keeply.domain.user.repository.UserRepository
 import com.keeply.global.dto.ApiResponse
 import com.keeply.global.dto.Message
 import com.keeply.global.redis.RedisService
-import com.keeply.global.s3.S3Service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -30,8 +29,7 @@ class ImageService (
     private val userRepository: UserRepository,
     private val tagRepository: TagRepository,
     private val redisService: RedisService,
-    private val imageValidator: ImageValidator,
-    private val s3Service: S3Service
+    private val imageValidator: ImageValidator
 ) {
     fun saveCachedImage(userId: Long, requestDTO: ImageRequestDTO.SaveRequestDTO): ApiResponse<ImageResponseDTO.SaveResponseDTO> {
         imageValidator.validateSaveRequest(requestDTO)
