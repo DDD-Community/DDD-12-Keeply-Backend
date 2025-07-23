@@ -33,7 +33,7 @@ class LoginController (
         } catch(e: Exception){
             val apiResponse = ApiResponse<LoginResponseDTO>(
                 success = false,
-                message = e.message ?: "Unknown error",
+                reason = e.message ?: "Unknown error",
             )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }

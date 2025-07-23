@@ -45,7 +45,7 @@ class ImageController (
         } catch (e: Exception) {
             val apiResponse = ApiResponse< ImageResponseDTO.SaveResponseDTO>(
                 success = false,
-                message = e.message
+                reason = e.message
             )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
@@ -62,7 +62,7 @@ class ImageController (
         } catch (e: Exception) {
             val apiResponse = ApiResponse<ImageResponseDTO.SaveResponseDTO>(
                 success = false,
-                message = e.message
+                reason = e.message
             )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
@@ -81,7 +81,7 @@ class ImageController (
         } catch (e: Exception) {
             val apiResponse = ApiResponse<ImageResponseDTO.MoveImageResponseDTO>(
                 success = false,
-                message = e.message
+                reason = e.message
             )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
@@ -99,7 +99,7 @@ class ImageController (
         } catch (e: Exception) {
             val apiResponse = ApiResponse<Message>(
                 success = false,
-                message = e.message
+                reason = e.message
             )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }

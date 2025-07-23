@@ -42,7 +42,7 @@ class FolderService (
 
         return ApiResponse(
             success = true,
-            data = FolderResponseDTO.Folder(
+            response = FolderResponseDTO.Folder(
                 folder.id,
                 folder.color,
                 folder.name
@@ -57,7 +57,7 @@ class FolderService (
         }
         return ApiResponse<FolderResponseDTO.FolderList>(
             success = true,
-            data = FolderResponseDTO.FolderList(
+            response = FolderResponseDTO.FolderList(
                 result
             )
         )
@@ -75,7 +75,7 @@ class FolderService (
 
         return ApiResponse<FolderResponseDTO.FolderImages>(
             success = true,
-            data = FolderResponseDTO.FolderImages(
+            response = FolderResponseDTO.FolderImages(
                 result
             )
         )
@@ -91,7 +91,7 @@ class FolderService (
         folder.color = requestDTO.color
         return ApiResponse<FolderResponseDTO.Folder>(
             success = true,
-            data = FolderResponseDTO.Folder(
+            response = FolderResponseDTO.Folder(
                 folder.id,
                 folder.color,
                 folder.name
@@ -108,7 +108,7 @@ class FolderService (
         folderRepository.delete(folder)
         return ApiResponse<Message>(
             success = true,
-            data = Message(
+            response = Message(
                 "${folder.name} 가 삭제되었습니다."
             )
         )

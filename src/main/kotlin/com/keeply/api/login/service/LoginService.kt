@@ -21,7 +21,7 @@ class LoginService (
         val jwtRefreshToken = jwtProvider.generateRefreshToken(user)
         return ApiResponse<LoginResponseDTO> (
             success = true,
-            data = LoginResponseDTO(
+            response = LoginResponseDTO(
                 accessToken = jwtAccessToken,
                 refreshToken = jwtRefreshToken
             )

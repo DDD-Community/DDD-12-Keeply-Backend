@@ -37,7 +37,7 @@ class FolderController (
         } catch (e: Exception) {
             val apiResponse = ApiResponse<FolderResponseDTO.Folder>(
                 success = false,
-                message = e.message
+                reason = e.message
             )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
@@ -55,7 +55,7 @@ class FolderController (
         } catch (e: Exception) {
             val apiResponse = ApiResponse<FolderResponseDTO.FolderList>(
                 success = false,
-                message = e.message
+                reason = e.message
             )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
@@ -75,7 +75,7 @@ class FolderController (
         } catch (e: Exception) {
             val apiResponse = ApiResponse<FolderResponseDTO.FolderImages>(
                 success = false,
-                message = e.message
+                reason = e.message
             )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
@@ -95,7 +95,7 @@ class FolderController (
         }catch (e: Exception) {
             val apiResponse = ApiResponse<FolderResponseDTO.Folder>(
                 success = false,
-                message = e.message
+                reason = e.message
             )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
@@ -113,7 +113,7 @@ class FolderController (
         } catch (e: Exception) {
             val apiResponse = ApiResponse<Message>(
                 success = false,
-                message = e.message
+                reason = e.message
             )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }

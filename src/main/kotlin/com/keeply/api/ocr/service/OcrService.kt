@@ -35,7 +35,7 @@ class OcrService(
 
         return ApiResponse(
             success = true,
-            data = OcrResponseDTO(cachedImageId, detectedText, recommendedTags)
+            response = OcrResponseDTO(cachedImageId, detectedText, recommendedTags)
         )
     }
 
@@ -52,7 +52,7 @@ class OcrService(
 
         return ApiResponse<OcrResponseDTO>(
             success = true,
-            data = OcrResponseDTO(
+            response = OcrResponseDTO(
                 detectedText = detectedText,
                 recommendedTags = recommendedTags
             )

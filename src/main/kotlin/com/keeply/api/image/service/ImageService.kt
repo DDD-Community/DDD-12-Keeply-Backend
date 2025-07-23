@@ -60,7 +60,7 @@ class ImageService (
 
         return ApiResponse<ImageResponseDTO.SaveResponseDTO> (
             success = true,
-            data = ImageResponseDTO.SaveResponseDTO(
+            response = ImageResponseDTO.SaveResponseDTO(
                 imageId = image.id!!
             )
         )
@@ -86,7 +86,7 @@ class ImageService (
 
         return ApiResponse<ImageResponseDTO.SaveResponseDTO>(
             success = true,
-            data = ImageResponseDTO.SaveResponseDTO(
+            response = ImageResponseDTO.SaveResponseDTO(
                 imageId = imageId
             )
         )
@@ -105,7 +105,7 @@ class ImageService (
         )
         return ApiResponse<ImageResponseDTO.SaveResponseDTO>(
             success = true,
-            data = ImageResponseDTO.SaveResponseDTO(
+            response = ImageResponseDTO.SaveResponseDTO(
                 imageId = image.id!!,
             )
         )
@@ -118,7 +118,7 @@ class ImageService (
         image.folder = folder
         return ApiResponse<ImageResponseDTO.MoveImageResponseDTO>(
             success = true,
-            data = ImageResponseDTO.MoveImageResponseDTO(
+            response = ImageResponseDTO.MoveImageResponseDTO(
                 imageId = image.id!!,
                 folderId = folder.id!!,
             )
@@ -133,7 +133,7 @@ class ImageService (
 
         return ApiResponse<Message>(
             success = true,
-            data = Message(
+            response = Message(
                 "$userId 유저의 $imageId 가 삭제되었습니다."
             )
         )

@@ -43,7 +43,7 @@ class OcrController (
         } catch (e: Exception) {
             val ApiResponse = ApiResponse<OcrResponseDTO>(
                 success = false,
-                message = e.message
+                reason = e.message
             )
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse)
         }
