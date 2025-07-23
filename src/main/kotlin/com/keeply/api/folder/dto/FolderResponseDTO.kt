@@ -18,6 +18,7 @@ class FolderResponseDTO {
     data class ImageInfo(
         val imageId: Long? = null,
         val presignedUrl: String? = null,
+        val insight: String? = null,
         val tag: String? = null
     )
 }
