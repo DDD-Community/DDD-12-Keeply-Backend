@@ -1,4 +1,4 @@
-package com.keeply.global.s3
+package com.keeply.global.aws.s3
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.mock.web.MockMultipartFile

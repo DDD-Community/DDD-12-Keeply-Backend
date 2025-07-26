@@ -1,4 +1,4 @@
-package com.keeply.global.s3.config
+package com.keeply.global.aws.s3.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
