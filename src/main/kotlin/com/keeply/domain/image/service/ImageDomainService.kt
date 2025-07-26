@@ -6,7 +6,7 @@ import com.keeply.domain.image.repository.ImageRepository
 import com.keeply.domain.tag.entity.Tag
 import com.keeply.domain.user.entity.User
 import com.keeply.global.fcm.service.FcmService
-import com.keeply.global.s3.S3Service
+import com.keeply.global.aws.s3.S3Service
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.Base64

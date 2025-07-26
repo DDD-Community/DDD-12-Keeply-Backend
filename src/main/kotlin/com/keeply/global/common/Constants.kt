@@ -14,7 +14,11 @@ object Constants {
             "/h2-console/**"
         )
 
-        val ALL = SWAGGER_PATHS + H2_PATHS
+        val APIS = arrayOf(
+            "/api/login"
+        )
+
+        val ALL = SWAGGER_PATHS + H2_PATHS + APIS
     }
 
     object Colors{

@@ -10,7 +10,7 @@ import com.keeply.domain.user.entity.User
 import com.keeply.domain.user.repository.UserRepository
 import com.keeply.global.dto.ApiResponse
 import com.keeply.global.dto.Message
-import com.keeply.global.s3.S3Service
+import com.keeply.global.aws.s3.S3Service
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 

@@ -7,7 +7,7 @@ import com.keeply.domain.image.repository.ImageRepository
 import com.keeply.global.common.googlevision.GoogleVisionAPI
 import com.keeply.global.dto.ApiResponse
 import com.keeply.global.redis.RedisService
-import com.keeply.global.s3.S3Service
+import com.keeply.global.aws.s3.S3Service
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.util.UUID

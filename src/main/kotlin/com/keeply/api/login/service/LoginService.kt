@@ -4,19 +4,31 @@ import com.keeply.api.login.dto.KakaoUserInfoDTO
 import com.keeply.api.login.dto.KakaoUserInfoDTO.kakaoUserInfo
 import com.keeply.api.login.dto.LoginResponseDTO
 import com.keeply.domain.user.entity.User
+import com.keeply.domain.user.entity.UserSetting
 import com.keeply.domain.user.repository.UserRepository
+import com.keeply.domain.user.repository.UserSettingRepository
+import com.keeply.global.aws.lambda.LambdaService
 import com.keeply.global.dto.ApiResponse
 import com.keeply.global.security.JwtProvider
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional
 class LoginService (
     private val userRepository: UserRepository,
+    private val userSettingRepository: UserSettingRepository,
+    private val lambdaService: LambdaService,
     private val jwtProvider: JwtProvider
 ) {
     fun loginAndRegister(requestDTO: KakaoUserInfoDTO.kakaoUserInfo): ApiResponse<LoginResponseDTO> {
-        val user: User = findOrSaveUserWithKakao(requestDTO)
+        val user: User = findOrSaveUserWithKakaoId(requestDTO)
+        restoreDeletedUser(user)
+
         user.fcmToken = requestDTO.fcmToken
+        val userSetting = findOrSaveUserSetting(user)
+        user.userSetting = userSetting
+
         val jwtAccessToken = jwtProvider.generateAccessToken(user)
         val jwtRefreshToken = jwtProvider.generateRefreshToken(user)
         return ApiResponse<LoginResponseDTO> (
@@ -28,7 +40,23 @@ class LoginService (
         )
     }
 
-    private fun findOrSaveUserWithKakao(userInfo: KakaoUserInfoDTO.kakaoUserInfo): User = (
+    private fun restoreDeletedUser(user: User) {
+        if (user.isDeleted) {
+            user.isDeleted = false
+            user.deletedAt = null
+            user.scheduledDeleteAt = null
+            lambdaService.restoreDeletedUserImages(user.id)
+        }
+    }
+
+    private fun findOrSaveUserSetting(user: User): UserSetting = (userSettingRepository.findByUser(user)
+        ?: userSettingRepository.save(
+            UserSetting(
+                user = user
+            )
+        ))
+
+    private fun findOrSaveUserWithKakaoId(userInfo: KakaoUserInfoDTO.kakaoUserInfo): User = (
             userRepository.findUserById(userInfo.id)
                 ?: userRepository.save(
                     User(
