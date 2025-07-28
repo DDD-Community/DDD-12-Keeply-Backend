@@ -27,7 +27,6 @@ class LambdaService(
             .build()
 
         lambdaClient.invoke(request)
-        lambdaClient.close()
     }
 
     fun restoreDeletedUserImages(userId: Long) {
@@ -44,7 +43,6 @@ class LambdaService(
             .build()
 
         lambdaClient.invoke(request)
-        lambdaClient.close()
     }
 
 }
