@@ -12,6 +12,7 @@ import com.keeply.domain.tag.entity.Tag
 import com.keeply.domain.tag.repository.TagRepository
 import com.keeply.domain.user.entity.User
 import com.keeply.domain.user.repository.UserRepository
+import com.keeply.global.aws.s3.S3Service
 import com.keeply.global.dto.ApiResponse
 import com.keeply.global.dto.Message
 import com.keeply.global.redis.RedisService
@@ -29,6 +30,7 @@ class ImageService (
     private val userRepository: UserRepository,
     private val tagRepository: TagRepository,
     private val redisService: RedisService,
+    private val s3Service: S3Service,
     private val imageValidator: ImageValidator
 ) {
     fun saveCachedImage(userId: Long, requestDTO: ImageRequestDTO.SaveRequestDTO): ApiResponse<ImageResponseDTO.SaveResponseDTO> {
@@ -119,6 +121,19 @@ class ImageService (
             response = ImageResponseDTO.MoveImageResponseDTO(
                 imageId = image.id!!,
                 folderId = folder.id!!,
+            )
+        )
+    }
+
+    fun getImageInfo(userId: Long, imageId: Long): ApiResponse<ImageResponseDTO.ImageInfoDTO> {
+        val image = getImage(imageId, userId)
+        return ApiResponse<ImageResponseDTO.ImageInfoDTO>(
+            success = true,
+            response = ImageResponseDTO.ImageInfoDTO(
+                imageId = image.id!!,
+                presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
+                insight = image.insight,
+                tag = image.tag?.name,
             )
         )
     }

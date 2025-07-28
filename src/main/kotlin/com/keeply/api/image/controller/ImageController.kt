@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -80,6 +81,24 @@ class ImageController (
             return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
         } catch (e: Exception) {
             val apiResponse = ApiResponse<ImageResponseDTO.MoveImageResponseDTO>(
+                success = false,
+                reason = e.message
+            )
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
+        }
+    }
+
+    @GetMapping("/{imageId}")
+    @Operation(summary = "단일 이미지 조회 API")
+    fun getImage(
+        @AuthenticationPrincipal userDetails: CustomUserDetails,
+        @PathVariable imageId: Long,
+    ): ResponseEntity<ApiResponse<ImageResponseDTO.ImageInfoDTO>> {
+        try{
+            val apiResponse = imageService.getImageInfo(userDetails.userId, imageId)
+            return ResponseEntity.ok(apiResponse)
+        } catch (e: Exception) {
+            val apiResponse = ApiResponse<ImageResponseDTO.ImageInfoDTO>(
                 success = false,
                 reason = e.message
             )
