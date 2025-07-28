@@ -1,7 +1,6 @@
 package com.keeply.api.login.service
 
-import com.keeply.api.login.dto.KakaoUserInfoDTO
-import com.keeply.api.login.dto.KakaoUserInfoDTO.kakaoUserInfo
+import com.keeply.api.login.dto.KakaoUserInfo
 import com.keeply.api.login.dto.LoginResponseDTO
 import com.keeply.domain.user.entity.User
 import com.keeply.domain.user.entity.UserSetting
@@ -21,7 +20,7 @@ class LoginService (
     private val lambdaService: LambdaService,
     private val jwtProvider: JwtProvider
 ) {
-    fun loginAndRegister(requestDTO: KakaoUserInfoDTO.kakaoUserInfo): ApiResponse<LoginResponseDTO> {
+    fun loginAndRegister(requestDTO: KakaoUserInfo): ApiResponse<LoginResponseDTO> {
         val user: User = findOrSaveUserWithKakaoId(requestDTO)
         restoreDeletedUser(user)
 
@@ -56,7 +55,7 @@ class LoginService (
             )
         ))
 
-    private fun findOrSaveUserWithKakaoId(userInfo: KakaoUserInfoDTO.kakaoUserInfo): User = (
+    private fun findOrSaveUserWithKakaoId(userInfo: KakaoUserInfo): User = (
             userRepository.findUserById(userInfo.id)
                 ?: userRepository.save(
                     User(
