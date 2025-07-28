@@ -15,7 +15,8 @@ object Constants {
         )
 
         val APIS = arrayOf(
-            "/api/login"
+            "/api/login",
+            "/api/login/**"
         )
 
         val ALL = SWAGGER_PATHS + H2_PATHS + APIS
