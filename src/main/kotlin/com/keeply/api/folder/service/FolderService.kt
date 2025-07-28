@@ -5,6 +5,7 @@ import com.keeply.api.folder.dto.FolderResponseDTO
 import com.keeply.api.folder.validator.FolderValidator
 import com.keeply.domain.folder.entity.Folder
 import com.keeply.domain.folder.repository.FolderRepository
+import com.keeply.domain.image.entity.Image
 import com.keeply.domain.image.repository.ImageRepository
 import com.keeply.domain.image.service.ImageDomainService
 import com.keeply.domain.user.entity.User
@@ -14,6 +15,8 @@ import com.keeply.global.dto.Message
 import com.keeply.global.aws.s3.S3Service
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import java.time.Duration
+import java.time.LocalDateTime
 
 @Service
 @Transactional
@@ -72,7 +75,14 @@ class FolderService (
         }
 
         val result = folder.images.map { image ->
-            FolderResponseDTO.ImageInfo(image.id, s3Service.generatePresignedUrl(image.s3Key!!),image.insight, image.tag!!.name)
+            FolderResponseDTO.ImageInfo(
+                image.id,
+                s3Service.generatePresignedUrl(image.s3Key!!),
+                image.insight,
+                image.tag!!.name,
+                image.isCategorized,
+                image.scheduledDeleteAt
+            )
         }
 
         return ApiResponse<FolderResponseDTO.FolderImages>(
@@ -84,10 +94,19 @@ class FolderService (
     }
 
     fun getUncategorizedImages(userId: Long): ApiResponse<FolderResponseDTO.FolderImages> {
-        val images = imageRepository.findAllByUserIdAndFolderIsNull(userId)
-            ?: throw Exception("미분류 이미지가 없습니다.")
+        val images = getImages(userId)
+
         val result = images.map { image ->
-            FolderResponseDTO.ImageInfo(image.id, s3Service.generatePresignedUrl(image.s3Key!!))
+            val daysUntilDeletion = Duration.between(LocalDateTime.now(), image.scheduledDeleteAt).toDays()
+            FolderResponseDTO.ImageInfo(
+                image.id,
+                s3Service.generatePresignedUrl(image.s3Key!!),
+                image.insight,
+                image.tag?.name,
+                image.isCategorized,
+                image.scheduledDeleteAt,
+                daysUntilDeletion
+            )
         }
 
         return ApiResponse<FolderResponseDTO.FolderImages>(
@@ -97,6 +116,8 @@ class FolderService (
             )
         )
     }
+
+    private fun getImages(userId: Long): List<Image> = imageRepository.findAllByUserIdAndFolderIsNull(userId)
 
     fun updateFolder(userId: Long, folderId: Long, requestDTO: FolderRequestDTO.UpdateRequestDTO): ApiResponse<FolderResponseDTO.Folder> {
         folderValidator.validateUpdate(requestDTO)

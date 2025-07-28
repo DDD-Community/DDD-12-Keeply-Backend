@@ -5,6 +5,7 @@ import com.keeply.domain.tag.entity.Tag
 import com.keeply.domain.user.entity.User
 import com.keeply.global.entity.BaseTimeEntity
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 class Image(
@@ -26,5 +27,9 @@ class Image(
         @JoinColumn(name = "tag_id")
         var tag: Tag? = null,
 
-        var size: Long = 0
+        var size: Long = 0,
+
+        var isCategorized: Boolean = true,
+        var scheduledDeleteAt: LocalDateTime? = null
+
 ) : BaseTimeEntity()

@@ -83,6 +83,8 @@ class ImageService (
         image.insight = imageInsight
         image.folder = folder
         image.tag = tag
+        image.isCategorized = true
+        image.scheduledDeleteAt = null
 
         return ApiResponse<ImageResponseDTO.SaveResponseDTO>(
             success = true,
@@ -103,6 +105,8 @@ class ImageService (
             tag = null,
             base64Image = base64Image,
         )
+        image.isCategorized = false
+        image.scheduledDeleteAt = image.createdAt!!.plusDays(30)
         return ApiResponse<ImageResponseDTO.SaveResponseDTO>(
             success = true,
             response = ImageResponseDTO.SaveResponseDTO(
@@ -134,6 +138,8 @@ class ImageService (
                 presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
                 insight = image.insight,
                 tag = image.tag?.name,
+                isCategorized = image.isCategorized,
+                scheduledDeleteAt = image.scheduledDeleteAt,
             )
         )
     }

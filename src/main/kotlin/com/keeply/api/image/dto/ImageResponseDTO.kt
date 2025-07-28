@@ -1,6 +1,6 @@
 package com.keeply.api.image.dto
 
-import com.keeply.domain.tag.entity.Tag
+import java.time.LocalDateTime
 
 class ImageResponseDTO {
     data class SaveResponseDTO(
@@ -14,6 +14,8 @@ class ImageResponseDTO {
         val imageId: Long,
         val presignedUrl: String,
         val insight: String?,
-        val tag: String?
+        val tag: String?,
+        val isCategorized: Boolean,
+        val scheduledDeleteAt: LocalDateTime?
     )
 }
