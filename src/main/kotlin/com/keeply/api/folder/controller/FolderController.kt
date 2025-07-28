@@ -62,24 +62,30 @@ class FolderController (
     }
 
     @GetMapping("/{folderId}")
-    @Operation(summary = "folderId로 폴더의 이미지 리스트 검색 API",
+    @Operation(summary = "folderId로 폴더의 이미지 리스트 검색, 미분류 이미지 리스트 검색 API",
         description = "폴더 검색시 folderId, 미분류 이미지 검색시, folderId = \"uncategorized\"")
     fun getFolderImages(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @PathVariable folderId: Long
+        @PathVariable folderId: String
     ): ResponseEntity<ApiResponse<FolderResponseDTO.FolderImages>> {
-        try {
-            val apiResponse = folderService.getFolderImages(userDetails.userId, folderId)
-
-            return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
+        return try {
+            val apiResponse = if (folderId == "uncategorized") {
+                folderService.getUncategorizedImages(userDetails.userId)
+            } else {
+                val parsedFolderId = folderId.toLongOrNull()
+                    ?: throw IllegalArgumentException("유효하지 않은 folderId입니다.")
+                folderService.getFolderImages(userDetails.userId, parsedFolderId)
+            }
+            ResponseEntity.ok(apiResponse)
         } catch (e: Exception) {
             val apiResponse = ApiResponse<FolderResponseDTO.FolderImages>(
                 success = false,
                 reason = e.message
             )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
+            ResponseEntity.badRequest().body(apiResponse)
         }
     }
+
 
     @PutMapping("/{folderId}")
     @Operation(summary = "폴더 수정 API")

@@ -5,6 +5,7 @@ import com.keeply.api.folder.dto.FolderResponseDTO
 import com.keeply.api.folder.validator.FolderValidator
 import com.keeply.domain.folder.entity.Folder
 import com.keeply.domain.folder.repository.FolderRepository
+import com.keeply.domain.image.repository.ImageRepository
 import com.keeply.domain.image.service.ImageDomainService
 import com.keeply.domain.user.entity.User
 import com.keeply.domain.user.repository.UserRepository
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service
 class FolderService (
     private val userRepository: UserRepository,
     private val folderRepository: FolderRepository,
+    private val imageRepository: ImageRepository,
     private val imageDomainService: ImageDomainService,
     private val folderValidator: FolderValidator,
     private val s3Service: S3Service
@@ -71,6 +73,21 @@ class FolderService (
 
         val result = folder.images.map { image ->
             FolderResponseDTO.ImageInfo(image.id, s3Service.generatePresignedUrl(image.s3Key!!),image.insight, image.tag!!.name)
+        }
+
+        return ApiResponse<FolderResponseDTO.FolderImages>(
+            success = true,
+            response = FolderResponseDTO.FolderImages(
+                result
+            )
+        )
+    }
+
+    fun getUncategorizedImages(userId: Long): ApiResponse<FolderResponseDTO.FolderImages> {
+        val images = imageRepository.findAllByUserIdAndFolderIsNull(userId)
+            ?: throw Exception("미분류 이미지가 없습니다.")
+        val result = images.map { image ->
+            FolderResponseDTO.ImageInfo(image.id, s3Service.generatePresignedUrl(image.s3Key!!))
         }
 
         return ApiResponse<FolderResponseDTO.FolderImages>(
