@@ -54,7 +54,7 @@ class S3Service (
             .getObjectRequest(getObjectRequest)
             .build()
 
-        return s3Presigner.presignGetObject(presignRequest).toString()
+        return s3Presigner.presignGetObject(presignRequest).url().toString()
     }
 
     fun getMultipartFileFromS3(
