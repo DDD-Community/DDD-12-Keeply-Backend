@@ -16,4 +16,5 @@ interface ImageRepository: JpaRepository<Image, Long> {
           AND i.isCategorized = false
     """)
     fun deleteAllScheduledBefore(time: LocalDateTime): Int
+    fun findAllByUserIdOrderByUpdatedAtDesc(userId: Long): List<Image>
 }
