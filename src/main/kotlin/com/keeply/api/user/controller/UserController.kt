@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -45,6 +46,22 @@ class UserController(
                 success = false,
                 reason = e.message
             ))
+        }
+    }
+
+    @PostMapping("/logout")
+    fun logout(
+        @AuthenticationPrincipal userDetails: CustomUserDetails,
+    ): ResponseEntity<ApiResponse<Message>> {
+        try{
+            val apiResponse = userService.logout(userDetails.userId)
+            return ResponseEntity.ok(apiResponse)
+        } catch (e: Exception) {
+            val apiResponse = ApiResponse<Message>(
+                success = false,
+                reason = e.message
+            )
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
         }
     }
 }
