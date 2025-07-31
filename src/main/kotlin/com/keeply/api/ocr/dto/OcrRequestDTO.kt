@@ -1,10 +1,16 @@
 package com.keeply.api.ocr.dto
 
-import org.springframework.web.multipart.MultipartFile
+import io.swagger.v3.oas.annotations.media.Schema
 
-class OcrRequestDTO{
-    data class Analyze(
-        val isNew: Boolean,
-        val imageId: Long? = null
-    )
-}
+data class OcrRequestDTO(
+    @Schema(description = """
+        신규이미지 -> isNew = true,
+        미분류이미지 -> isNew = false
+    """)
+    val isNew: Boolean,
+    @Schema(description = """
+        신규이미지 -> imageId = null,
+        미분류이미지 -> imageId = {imageId}
+    """)
+    val imageId: Long? = null
+)
