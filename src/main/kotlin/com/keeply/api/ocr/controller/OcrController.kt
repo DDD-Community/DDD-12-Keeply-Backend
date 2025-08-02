@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -36,19 +35,11 @@ class OcrController (
         @RequestPart("file") file: MultipartFile?
     ): ResponseEntity<ApiResponse<OcrResponseDTO>> {
         val requestDTO = OcrRequestDTO(isNew, imageId)
-        try {
-            val apiResponse = if (requestDTO.isNew) {
-                ocrService.analyzeNewImage(requestDTO, file)
-            } else {
-                ocrService.analyzeSavedImage(userDetails.userId, requestDTO, file)
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } catch (e: Exception) {
-            val ApiResponse = ApiResponse<OcrResponseDTO>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse)
+        val apiResponse = if (requestDTO.isNew) {
+            ocrService.analyzeNewImage(requestDTO, file)
+        } else {
+            ocrService.analyzeSavedImage(userDetails.userId, requestDTO, file)
         }
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
 }

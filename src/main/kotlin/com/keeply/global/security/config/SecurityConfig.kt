@@ -1,5 +1,6 @@
 package com.keeply.global.security.config
 
+import com.keeply.domain.user.repository.UserRepository
 import com.keeply.global.common.Constants
 import com.keeply.global.security.JwtFilter
 import com.keeply.global.security.JwtProvider
@@ -12,7 +13,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 class SecurityConfig (
-    private val jwtProvider: JwtProvider
+    private val jwtProvider: JwtProvider,
+    private val userRepository: UserRepository
 ) {
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
@@ -37,7 +39,7 @@ class SecurityConfig (
                 it.anyRequest().authenticated()
             }
             .addFilterBefore(
-                JwtFilter(jwtProvider),
+                JwtFilter(jwtProvider,userRepository),
                 UsernamePasswordAuthenticationFilter::class.java
             )
         return http.build()

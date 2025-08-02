@@ -22,15 +22,7 @@ class HomeController(
     fun getHome(
         @AuthenticationPrincipal userDetails: CustomUserDetails
     ): ResponseEntity<ApiResponse<HomeResponseDTO>>{
-        try{
-            val apiResponse = homeService.getHome(userDetails.userId)
-            return ResponseEntity.ok(apiResponse)
-        } catch(e: Exception){
-            val apiResponse = ApiResponse<HomeResponseDTO>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.badRequest().body(apiResponse)
-        }
+        val apiResponse = homeService.getHome(userDetails.userId)
+        return ResponseEntity.ok(apiResponse)
     }
 }

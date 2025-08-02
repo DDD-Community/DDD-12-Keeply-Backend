@@ -6,7 +6,6 @@ import com.keeply.api.user.service.UserSettingService
 import com.keeply.global.dto.ApiResponse
 import com.keeply.global.security.CustomUserDetails
 import io.swagger.v3.oas.annotations.Operation
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
@@ -25,15 +24,8 @@ class UserSettingController(
     fun getUserSetting(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
     ): ResponseEntity<ApiResponse<UserSettingResponseDTO>> {
-        try{
-            val apiResponse = userSettingService.getUserSetting(userDetails.userId)
-            return ResponseEntity.ok(apiResponse)
-        } catch (e: Exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse<UserSettingResponseDTO>(
-                success = false,
-                reason = e.message
-            ))
-        }
+        val apiResponse = userSettingService.getUserSetting(userDetails.userId)
+        return ResponseEntity.ok(apiResponse)
     }
 
     @PostMapping
@@ -42,14 +34,7 @@ class UserSettingController(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @RequestBody requestDTO: UserSettingRequestDTO
     ): ResponseEntity<ApiResponse<UserSettingResponseDTO>> {
-        try{
-            val apiReponse = userSettingService.setUserSetting(userDetails.userId, requestDTO)
-            return ResponseEntity.ok(apiReponse)
-        } catch (e: Exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse<UserSettingResponseDTO>(
-                success = false,
-                reason = e.message
-            ))
-        }
+        val apiReponse = userSettingService.setUserSetting(userDetails.userId, requestDTO)
+        return ResponseEntity.ok(apiReponse)
     }
 }

@@ -23,45 +23,23 @@ class UserController(
     fun getUserInfo(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
     ): ResponseEntity<ApiResponse<UserInfoDTO>> {
-        try{
-            val apiResponse = userService.getUserInfo(userDetails.userId)
-            return ResponseEntity.ok(apiResponse)
-        } catch (e: Exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse<UserInfoDTO>(
-                success = false,
-                reason = e.message
-            ))
-        }
+        val apiResponse = userService.getUserInfo(userDetails.userId)
+        return ResponseEntity.ok(apiResponse)
     }
 
     @DeleteMapping
     fun deleteUser(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
     ): ResponseEntity<ApiResponse<Message>> {
-        try{
-            val apiResponse = userService.deleteUser(userDetails.userId)
-            return ResponseEntity.ok(apiResponse)
-        } catch (e: Exception) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ApiResponse<Message>(
-                success = false,
-                reason = e.message
-            ))
-        }
+        val apiResponse = userService.deleteUser(userDetails.userId)
+        return ResponseEntity.ok(apiResponse)
     }
 
     @PostMapping("/logout")
     fun logout(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
     ): ResponseEntity<ApiResponse<Message>> {
-        try{
-            val apiResponse = userService.logout(userDetails.userId)
-            return ResponseEntity.ok(apiResponse)
-        } catch (e: Exception) {
-            val apiResponse = ApiResponse<Message>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
-        }
+        val apiResponse = userService.logout(userDetails.userId)
+        return ResponseEntity.ok(apiResponse)
     }
 }

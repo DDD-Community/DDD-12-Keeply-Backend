@@ -30,17 +30,8 @@ class FolderController (
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @RequestBody requestDTO: FolderRequestDTO.CreateRequestDTO
     ): ResponseEntity<ApiResponse<FolderResponseDTO.Folder>> {
-        try {
-            val apiResponse = folderService.createFolder(userDetails.userId, requestDTO)
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse)
-        } catch (e: Exception) {
-            val apiResponse = ApiResponse<FolderResponseDTO.Folder>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
-        }
+        val apiResponse = folderService.createFolder(userDetails.userId, requestDTO)
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse)
     }
 
     @GetMapping
@@ -48,17 +39,8 @@ class FolderController (
     fun getFolders(
         @AuthenticationPrincipal userDetails: CustomUserDetails
     ): ResponseEntity<ApiResponse<FolderResponseDTO.FolderList>> {
-        try {
-            val apiResponse = folderService.getFolders(userDetails.userId)
-
-            return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } catch (e: Exception) {
-            val apiResponse = ApiResponse<FolderResponseDTO.FolderList>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
-        }
+        val apiResponse = folderService.getFolders(userDetails.userId)
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
 
     @GetMapping("/{folderId}")
@@ -68,22 +50,14 @@ class FolderController (
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @PathVariable folderId: String
     ): ResponseEntity<ApiResponse<FolderResponseDTO.FolderImages>> {
-        return try {
-            val apiResponse = if (folderId == "uncategorized") {
-                folderService.getUncategorizedImages(userDetails.userId)
-            } else {
-                val parsedFolderId = folderId.toLongOrNull()
-                    ?: throw IllegalArgumentException("유효하지 않은 folderId입니다.")
-                folderService.getFolderImages(userDetails.userId, parsedFolderId)
-            }
-            ResponseEntity.ok(apiResponse)
-        } catch (e: Exception) {
-            val apiResponse = ApiResponse<FolderResponseDTO.FolderImages>(
-                success = false,
-                reason = e.message
-            )
-            ResponseEntity.badRequest().body(apiResponse)
+        val apiResponse = if (folderId == "uncategorized") {
+            folderService.getUncategorizedImages(userDetails.userId)
+        } else {
+            val parsedFolderId = folderId.toLongOrNull()
+                ?: throw Exception("유효하지 않은 folderId입니다.")
+            folderService.getFolderImages(userDetails.userId, parsedFolderId)
         }
+        return ResponseEntity.ok(apiResponse)
     }
 
 
@@ -94,17 +68,8 @@ class FolderController (
         @PathVariable folderId: Long,
         @RequestBody requestDTO : FolderRequestDTO.UpdateRequestDTO
     ): ResponseEntity<ApiResponse<FolderResponseDTO.Folder>> {
-        try {
-            val apiResponse = folderService.updateFolder(userDetails.userId, folderId, requestDTO)
-
-            return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        }catch (e: Exception) {
-            val apiResponse = ApiResponse<FolderResponseDTO.Folder>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
-        }
+        val apiResponse = folderService.updateFolder(userDetails.userId, folderId, requestDTO)
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
 
     @DeleteMapping("/{folderId}")
@@ -113,15 +78,7 @@ class FolderController (
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @PathVariable folderId: Long
     ): ResponseEntity<ApiResponse<Message>> {
-        try {
-            val apiResponse = folderService.deleteFolder(userDetails.userId, folderId)
-            return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } catch (e: Exception) {
-            val apiResponse = ApiResponse<Message>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
-        }
+        val apiResponse = folderService.deleteFolder(userDetails.userId, folderId)
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
 }

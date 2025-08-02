@@ -7,7 +7,6 @@ import com.keeply.global.dto.ApiResponse
 import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -26,16 +25,7 @@ class LoginController (
     fun loginAndRegister(
         @RequestBody requestDTO: KakaoUserInfo
     ) : ResponseEntity<ApiResponse<LoginResponseDTO>> {
-        try{
-            val apiResponse = loginService.loginAndRegister(requestDTO)
-
-            return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } catch(e: Exception){
-            val apiResponse = ApiResponse<LoginResponseDTO>(
-                success = false,
-                reason = e.message ?: "Unknown error",
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
-        }
+        val apiResponse = loginService.loginAndRegister(requestDTO)
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
 }

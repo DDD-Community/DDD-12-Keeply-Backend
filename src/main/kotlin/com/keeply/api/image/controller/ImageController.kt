@@ -36,20 +36,12 @@ class ImageController (
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @RequestBody requestDTO: ImageRequestDTO.SaveRequestDTO
     ): ResponseEntity<ApiResponse<ImageResponseDTO.SaveResponseDTO>> {
-        try {
-            val apiResponse = if (requestDTO.isCached) {
-                imageService.saveCachedImage(userDetails.userId, requestDTO)
-            } else {
-                imageService.setFolderOfImage(userDetails.userId, requestDTO)
-            }
-            return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } catch (e: Exception) {
-            val apiResponse = ApiResponse< ImageResponseDTO.SaveResponseDTO>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
+        val apiResponse = if (requestDTO.isCached) {
+            imageService.saveCachedImage(userDetails.userId, requestDTO)
+        } else {
+            imageService.setFolderOfImage(userDetails.userId, requestDTO)
         }
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
     @PostMapping("/uncategorized")
     @Operation(summary = "이미지 s3에 저장(이미지 미분류로 저장)")
@@ -57,16 +49,8 @@ class ImageController (
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @RequestPart("file") file: MultipartFile
     ): ResponseEntity<ApiResponse<ImageResponseDTO.SaveResponseDTO>> {
-        try{
-            val apiResponse = imageService.saveUncategorizedImage(userDetails.userId, file)
-            return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } catch (e: Exception) {
-            val apiResponse = ApiResponse<ImageResponseDTO.SaveResponseDTO>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
-        }
+        val apiResponse = imageService.saveUncategorizedImage(userDetails.userId, file)
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
 
     @PatchMapping("/{imageId}")
@@ -76,16 +60,8 @@ class ImageController (
         @PathVariable imageId: Long,
         @RequestBody requestDTO: ImageRequestDTO.MoveImageRequestDTO
     ): ResponseEntity<ApiResponse<ImageResponseDTO.MoveImageResponseDTO>> {
-        try {
-            val apiResponse = imageService.moveImage(userDetails.userId, imageId, requestDTO)
-            return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } catch (e: Exception) {
-            val apiResponse = ApiResponse<ImageResponseDTO.MoveImageResponseDTO>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
-        }
+        val apiResponse = imageService.moveImage(userDetails.userId, imageId, requestDTO)
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
 
     @GetMapping("/{imageId}")
@@ -94,16 +70,8 @@ class ImageController (
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @PathVariable imageId: Long,
     ): ResponseEntity<ApiResponse<ImageResponseDTO.ImageInfoDTO>> {
-        try{
-            val apiResponse = imageService.getImageInfo(userDetails.userId, imageId)
-            return ResponseEntity.ok(apiResponse)
-        } catch (e: Exception) {
-            val apiResponse = ApiResponse<ImageResponseDTO.ImageInfoDTO>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
-        }
+        val apiResponse = imageService.getImageInfo(userDetails.userId, imageId)
+        return ResponseEntity.ok(apiResponse)
     }
 
     @DeleteMapping("/{imageId}")
@@ -112,15 +80,7 @@ class ImageController (
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @PathVariable imageId: Long
     ): ResponseEntity<ApiResponse<Message>> {
-        try{
-            val apiResponse = imageService.deleteImage(userDetails.userId, imageId)
-            return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
-        } catch (e: Exception) {
-            val apiResponse = ApiResponse<Message>(
-                success = false,
-                reason = e.message
-            )
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiResponse)
-        }
+        val apiResponse = imageService.deleteImage(userDetails.userId, imageId)
+        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
 }

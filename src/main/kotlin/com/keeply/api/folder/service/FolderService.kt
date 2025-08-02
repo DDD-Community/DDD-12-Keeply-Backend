@@ -38,10 +38,6 @@ class FolderService (
             ?: throw Exception("존재하지 않는 유저입니다.")
 
         var folder = getFolderByUserIdAndFolderName(userId, folderName)
-        if(folder != null) {
-            throw Exception("이미 존재하는 폴더입니다.")
-        }
-
         folder = Folder(name = folderName, color = color, user = user)
         folder = folderRepository.save(folder)
 
@@ -78,9 +74,6 @@ class FolderService (
 
     fun getFolderImages(userId: Long, folderId: Long): ApiResponse<FolderResponseDTO.FolderImages> {
         val folder = getFolderByUserIdAndFolderId(userId, folderId)
-        if(folder == null) {
-            throw Exception("존재하지 않는 폴더입니다.")
-        }
 
         val result = folder.images.map { image ->
             FolderResponseDTO.ImageInfo(
@@ -130,9 +123,6 @@ class FolderService (
     fun updateFolder(userId: Long, folderId: Long, requestDTO: FolderRequestDTO.UpdateRequestDTO): ApiResponse<FolderResponseDTO.Folder> {
         folderValidator.validateUpdate(requestDTO)
         val folder = getFolderByUserIdAndFolderId(userId, folderId)
-        if(folder == null) {
-            throw Exception("존재하지 않는 폴더입니다.")
-        }
         folder.name = requestDTO.folderName
         folder.color = requestDTO.color
         return ApiResponse<FolderResponseDTO.Folder>(
@@ -149,9 +139,6 @@ class FolderService (
 
     fun deleteFolder(userId: Long, folderId: Long): ApiResponse<Message> {
         val folder = getFolderByUserIdAndFolderId(userId, folderId)
-        if(folder == null) {
-            throw Exception("존재하지 않는 폴더입니다.")
-        }
         imageDomainService.deleteAllImagesInFolder(folder)
         folderRepository.delete(folder)
         return ApiResponse<Message>(
@@ -162,8 +149,9 @@ class FolderService (
         )
     }
 
-    private fun getFolderByUserIdAndFolderId(userId: Long, folderId: Long): Folder? =
+    private fun getFolderByUserIdAndFolderId(userId: Long, folderId: Long): Folder =
         folderRepository.findByUserIdAndId(userId, folderId)
+            ?: throw Exception("존재하지 않는 폴더입니다.")
 
     private fun getFolderListByUserId(userId: Long): List<Folder> = folderRepository.findAllByUserId(userId)
 

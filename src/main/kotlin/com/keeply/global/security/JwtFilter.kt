@@ -1,5 +1,6 @@
 package com.keeply.global.security
 
+import com.keeply.domain.user.repository.UserRepository
 import com.keeply.global.common.Constants
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
@@ -13,7 +14,8 @@ import kotlin.text.startsWith
 import kotlin.text.substring
 
 class JwtFilter(
-    private val jwtProvider: JwtProvider
+    private val jwtProvider: JwtProvider,
+    private val userRepository: UserRepository
 ) : GenericFilterBean() {
     override fun doFilter(
         request: ServletRequest,
@@ -34,6 +36,22 @@ class JwtFilter(
         if (jwtAccessToken != null && jwtProvider.validateToken(jwtAccessToken)) {
             val authentication = jwtProvider.getAuthentication(jwtAccessToken)
             SecurityContextHolder.getContext().authentication = authentication
+            if(userRepository.findUserById((authentication.principal as CustomUserDetails).userId)==null) {
+                val httpResponse = response as HttpServletResponse
+                httpResponse.status = 401
+                httpResponse.contentType = "application/json"
+                httpResponse.characterEncoding = "UTF-8"
+                httpResponse.writer.write(
+                    """
+                        {
+                            "success": false,
+                            "reason": "존재하지 않는 유저입니다. 다시 로그인 해주세요",
+                            "response": null
+                        }
+                    """.trimIndent()
+                )
+                return
+            }
         } else {
             val httpResponse = response as HttpServletResponse
             httpResponse.status = 401
@@ -43,8 +61,8 @@ class JwtFilter(
                 """
                 {
                     "success": false,
-                    "message": "토큰이 없거나 유효하지 않습니다. 다시 로그인해주세요.",
-                    "data": null
+                    "reason": "토큰이 없거나 유효하지 않습니다. 다시 로그인해주세요.",
+                    "response": null
                 }
             """.trimIndent()
             )
