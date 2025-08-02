@@ -1,6 +1,6 @@
 package com.keeply.api.ocr.validator
 
-import com.keeply.api.ocr.dto.OcrRequestDTO.Analyze
+import com.keeply.api.ocr.dto.OcrRequestDTO
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
 
@@ -12,7 +12,7 @@ class OcrValidator {
             throw Exception("이미지 파일의 크기는 최대 1MB로 제한됩니다.")
         }
     }
-    fun validateAnalyzeRequest(request: Analyze) {
+    fun validateAnalyzeRequest(request: OcrRequestDTO) {
         if (request.isNew) {
             if (request.imageId != null) {
                 throw IllegalArgumentException("isNew가 true인 경우 imageId는 null이어야 합니다.")

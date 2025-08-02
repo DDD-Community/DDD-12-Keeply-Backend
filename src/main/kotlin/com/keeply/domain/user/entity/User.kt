@@ -16,7 +16,7 @@ class User(
     @Id
     val id: Long,
     val nickname: String,
-    val email: String,
+    val email: String?,
     val profileImageUrl: String,
     val thumbnailImageUrl: String,
     var usedStorageSize: Long = 0,

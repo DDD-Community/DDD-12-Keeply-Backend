@@ -16,7 +16,7 @@ data class KakaoAccount (
     val profile_image_needs_agreement: Boolean,
     val email_needs_agreement: Boolean,
     val profile: Profile,
-    val email: String
+    val email: String?
 )
 
 data class Profile(

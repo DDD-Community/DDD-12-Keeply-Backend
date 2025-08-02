@@ -20,7 +20,7 @@ class OcrService(
     private val s3Service: S3Service,
     private val googleVisionAPI: GoogleVisionAPI
 ) {
-    fun analyzeNewImage(requestDTO: OcrRequestDTO.Analyze, file: MultipartFile?): ApiResponse<OcrResponseDTO> {
+    fun analyzeNewImage(requestDTO: OcrRequestDTO, file: MultipartFile?): ApiResponse<OcrResponseDTO> {
 
         ocrValidator.validateImageFile(file)
         ocrValidator.validateAnalyzeRequest(requestDTO)
@@ -39,7 +39,7 @@ class OcrService(
         )
     }
 
-    fun analyzeSavedImage(userId: Long, requestDTO: OcrRequestDTO.Analyze, file: MultipartFile?): ApiResponse<OcrResponseDTO> {
+    fun analyzeSavedImage(userId: Long, requestDTO: OcrRequestDTO, file: MultipartFile?): ApiResponse<OcrResponseDTO> {
         ocrValidator.validateAnalyzeRequest(requestDTO)
         val imageId = requestDTO.imageId
         val image = imageRepository.findImageByIdAndUserId(imageId!!,userId)

@@ -28,7 +28,7 @@ class HomeService(
                     presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
                     tag = image.tag?.name,
                     insight = image.insight,
-                    updatedAt = image.updatedAt!!,
+                    updatedAt = image.updatedAt,
                 )
             }
         val recentFolders = foldersOrderByUpdatedAtDesc
@@ -37,7 +37,7 @@ class HomeService(
                 FolderInfo(
                     folderId = folder.id!!,
                     color = folder.color,
-                    updatedAt = folder.updatedAt!!,
+                    updatedAt = folder.updatedAt,
                     imageCount = folder.images.count()
                 )
             }
@@ -50,7 +50,7 @@ class HomeService(
                     presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
                     tag = image.tag?.name,
                     insight = image.insight,
-                    updatedAt = image.updatedAt!!,
+                    updatedAt = image.updatedAt,
                 )
             }
 

@@ -1,5 +1,6 @@
 package com.keeply.api.home.dto
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
 data class HomeResponseDTO(
@@ -15,13 +16,15 @@ data class ImageInfo(
     val presignedUrl: String,
     val tag: String? = null,
     val insight: String? = null,
-    val updatedAt: LocalDateTime
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    val updatedAt: LocalDateTime? = null,
 )
 
 data class FolderInfo(
     val folderId: Long,
     val color: String,
-    val updatedAt: LocalDateTime,
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+    val updatedAt: LocalDateTime? = null,
     val imageCount: Int
 )
 

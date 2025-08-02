@@ -19,6 +19,8 @@ import com.keeply.global.redis.RedisService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
+import java.time.Duration
+import java.time.LocalDateTime
 import java.util.Base64
 
 @Service
@@ -131,6 +133,8 @@ class ImageService (
 
     fun getImageInfo(userId: Long, imageId: Long): ApiResponse<ImageResponseDTO.ImageInfoDTO> {
         val image = getImage(imageId, userId)
+        val daysUntilDeltion = if(image.isCategorized) null
+        else Duration.between(LocalDateTime.now(), image.scheduledDeleteAt).toDays()
         return ApiResponse<ImageResponseDTO.ImageInfoDTO>(
             success = true,
             response = ImageResponseDTO.ImageInfoDTO(

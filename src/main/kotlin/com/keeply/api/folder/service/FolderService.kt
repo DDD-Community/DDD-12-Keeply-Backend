@@ -43,14 +43,16 @@ class FolderService (
         }
 
         folder = Folder(name = folderName, color = color, user = user)
-        folderRepository.save(folder)
+        folder = folderRepository.save(folder)
 
         return ApiResponse(
             success = true,
             response = FolderResponseDTO.Folder(
-                folder.id,
+                folder.id!!,
+                folder.name,
                 folder.color,
-                folder.name
+                folder.images.size,
+                folder.updatedAt
             )
         )
     }
@@ -58,7 +60,13 @@ class FolderService (
     fun getFolders(userId: Long): ApiResponse<FolderResponseDTO.FolderList> {
         val folderList = getFolderListByUserId(userId)
         val result = folderList.map { folder ->
-            FolderResponseDTO.Folder(folder.id, folder.color, folder.name)
+            FolderResponseDTO.Folder(
+                folder.id!!,
+                folder.name,
+                folder.color,
+                folder.images.size,
+                folder.updatedAt
+            )
         }
         return ApiResponse<FolderResponseDTO.FolderList>(
             success = true,
@@ -76,12 +84,12 @@ class FolderService (
 
         val result = folder.images.map { image ->
             FolderResponseDTO.ImageInfo(
-                image.id,
+                image.id!!,
                 s3Service.generatePresignedUrl(image.s3Key!!),
                 image.insight,
                 image.tag!!.name,
                 image.isCategorized,
-                image.scheduledDeleteAt
+                image.scheduledDeleteAt,
             )
         }
 
@@ -99,7 +107,7 @@ class FolderService (
         val result = images.map { image ->
             val daysUntilDeletion = Duration.between(LocalDateTime.now(), image.scheduledDeleteAt).toDays()
             FolderResponseDTO.ImageInfo(
-                image.id,
+                image.id!!,
                 s3Service.generatePresignedUrl(image.s3Key!!),
                 image.insight,
                 image.tag?.name,
@@ -130,9 +138,11 @@ class FolderService (
         return ApiResponse<FolderResponseDTO.Folder>(
             success = true,
             response = FolderResponseDTO.Folder(
-                folder.id,
+                folder.id!!,
+                folder.name,
                 folder.color,
-                folder.name
+                folder.images.size,
+                folder.updatedAt
             )
         )
     }

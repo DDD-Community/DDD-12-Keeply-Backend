@@ -8,5 +8,5 @@ data class UserInfoDTO(
     @Schema(description = "닉네임")
     val nickname: String,
     @Schema(description = "이메일")
-    val email: String
+    val email: String?
 )

@@ -13,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
@@ -30,9 +31,11 @@ class OcrController (
     )
     fun analyze(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @ModelAttribute requestDTO: OcrRequestDTO.Analyze,
+        @RequestParam("isNew") isNew: Boolean,
+        @RequestParam("imageId", required = false) imageId: Long?,
         @RequestPart("file") file: MultipartFile?
     ): ResponseEntity<ApiResponse<OcrResponseDTO>> {
+        val requestDTO = OcrRequestDTO(isNew, imageId)
         try {
             val apiResponse = if (requestDTO.isNew) {
                 ocrService.analyzeNewImage(requestDTO, file)
