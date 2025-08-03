@@ -10,4 +10,15 @@ class Tag(
         val id: Long? = null,
         @Column(nullable = false)
         val name: String
-) : BaseTimeEntity()
+) : BaseTimeEntity() {
+        companion object {
+                fun builder(): Builder = Builder()
+        }
+        class Builder {
+                private var name: String = ""
+
+                fun name(name: String) = apply { this.name = name }
+
+                fun build(): Tag = Tag(name = name)
+        }
+}

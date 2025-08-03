@@ -34,4 +34,37 @@ class User(
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     var userSetting: UserSetting? = null
 
-) : BaseTimeEntity()
+) : BaseTimeEntity() {
+    companion object {
+        fun builder(): Builder = Builder()
+    }
+    class Builder {
+        var id: Long = 0
+        var nickname: String = ""
+        var email: String? = null
+        var profileImageUrl: String = ""
+        var thumbnailImageUrl: String = ""
+        var usedStorageSize: Long = 0
+        var storageLimit: Long = 0
+        var fcmToken: String? = null
+
+        fun id(id: Long) = apply { this.id = id }
+        fun nickname(nickname: String) = apply { this.nickname = nickname }
+        fun email(email: String) = apply { this.email = email }
+        fun profileImageUrl(profileImageUrl: String) = apply { this.profileImageUrl = profileImageUrl }
+        fun thumbnailImageUrl(thumbnailImageUrl: String) = apply { this.thumbnailImageUrl = thumbnailImageUrl }
+        fun usedStorageSize(usedStorageSize: Long) = apply { this.usedStorageSize = usedStorageSize }
+        fun storageLimit(storageLimit: Long) = apply { this.storageLimit = storageLimit }
+        fun fcmToken(fcmToken: String) = apply { this.fcmToken = fcmToken }
+        fun build(): User = User(
+            id = id,
+            nickname = nickname,
+            email = email,
+            profileImageUrl = profileImageUrl,
+            thumbnailImageUrl = thumbnailImageUrl,
+            usedStorageSize = usedStorageSize,
+            storageLimit = storageLimit,
+            fcmToken = fcmToken
+        )
+    }
+}
