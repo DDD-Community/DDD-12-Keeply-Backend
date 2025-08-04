@@ -50,21 +50,21 @@ class LoginService (
 
     private fun findOrSaveUserSetting(user: User): UserSetting = (userSettingRepository.findByUser(user)
         ?: userSettingRepository.save(
-            UserSetting(
-                user = user
-            )
+            UserSetting.builder()
+                .user(user)
+                .build()
         ))
 
     private fun findOrSaveUserWithKakaoId(userInfo: KakaoUserInfo): User = (
             userRepository.findUserById(userInfo.id)
                 ?: userRepository.save(
-                    User(
-                        id = userInfo.id,
-                        nickname = userInfo.kakao_account.profile.nickname,
-                        email = userInfo.kakao_account.email,
-                        profileImageUrl = userInfo.kakao_account.profile.profile_image_url,
-                        thumbnailImageUrl = userInfo.kakao_account.profile.thumbnail_image_url
-                    )
+                    User.builder()
+                        .id(userInfo.id)
+                        .nickname(userInfo.kakao_account.profile.nickname)
+                        .email(userInfo.kakao_account.email)
+                        .profileImageUrl(userInfo.kakao_account.profile.profile_image_url)
+                        .thumbnailImageUrl(userInfo.kakao_account.profile.thumbnail_image_url)
+                        .build()
                 )
-        )
+            )
 }

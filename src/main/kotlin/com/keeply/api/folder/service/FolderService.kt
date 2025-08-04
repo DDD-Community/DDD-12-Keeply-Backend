@@ -38,7 +38,13 @@ class FolderService (
             ?: throw Exception("존재하지 않는 유저입니다.")
 
         var folder = getFolderByUserIdAndFolderName(userId, folderName)
-        folder = Folder(name = folderName, color = color, user = user)
+        if(folder != null) throw Exception("이미 존재하는 폴더입니다.")
+        folder = Folder.builder()
+            .name(folderName)
+            .color(color)
+            .user(user)
+            .build()
+
         folder = folderRepository.save(folder)
 
         return ApiResponse(
@@ -157,6 +163,7 @@ class FolderService (
 
     private fun getFolderByUserIdAndFolderName(userId: Long, folderName: String): Folder? =
         folderRepository.findByUserIdAndName(userId, folderName)
+
 
     private fun getUser(userId: Long): User? =
         userRepository.findById(userId).get()

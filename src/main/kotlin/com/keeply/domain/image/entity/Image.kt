@@ -41,20 +41,20 @@ class Image(
         private var insight: String? = null
         private var s3Key: String? = null
         private lateinit var user: User
-        private lateinit var folder: Folder
-        private lateinit var tag: Tag
+        private var folder: Folder? = null
+        private var tag: Tag? = null
         private var size: Long = 0
         private var isCategorized: Boolean = true
         private var scheduledDeleteAt: LocalDateTime? = null
 
-        fun insight(insight: String) = apply { this.insight = insight }
-        fun s3Key(s3Key: String) = apply { this.s3Key = s3Key }
+        fun insight(insight: String?) = apply { this.insight = insight }
+        fun s3Key(s3Key: String?) = apply { this.s3Key = s3Key }
         fun user(user: User) = apply { this.user = user }
-        fun folder(folder: Folder) = apply { this.folder = folder }
-        fun tag(tag: Tag) = apply { this.tag = tag }
+        fun folder(folder: Folder?) = apply { this.folder = folder }
+        fun tag(tag: Tag?) = apply { this.tag = tag }
         fun size(size: Long) = apply { this.size = size }
         fun isCategorized(isCategorized: Boolean) = apply {this.isCategorized = isCategorized }
-        fun scheduledDeleteAt(date: LocalDateTime) = apply { this.scheduledDeleteAt = date}
+        fun scheduledDeleteAt(date: LocalDateTime?) = apply { this.scheduledDeleteAt = date}
 
         fun build(): Image = Image(
             insight = insight,

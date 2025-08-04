@@ -50,12 +50,12 @@ class User(
 
         fun id(id: Long) = apply { this.id = id }
         fun nickname(nickname: String) = apply { this.nickname = nickname }
-        fun email(email: String) = apply { this.email = email }
+        fun email(email: String?) = apply { this.email = email }
         fun profileImageUrl(profileImageUrl: String) = apply { this.profileImageUrl = profileImageUrl }
         fun thumbnailImageUrl(thumbnailImageUrl: String) = apply { this.thumbnailImageUrl = thumbnailImageUrl }
         fun usedStorageSize(usedStorageSize: Long) = apply { this.usedStorageSize = usedStorageSize }
         fun storageLimit(storageLimit: Long) = apply { this.storageLimit = storageLimit }
-        fun fcmToken(fcmToken: String) = apply { this.fcmToken = fcmToken }
+        fun fcmToken(fcmToken: String?) = apply { this.fcmToken = fcmToken }
         fun build(): User = User(
             id = id,
             nickname = nickname,

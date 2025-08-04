@@ -44,8 +44,7 @@ class ImageService (
 
         val folder = getFolder(userId, folderId)
         val user = getUser(userId)
-        val tag = tagRepository.findByName(tagName)
-            ?: tagRepository.save(Tag(name = tagName))
+        val tag = getTag(tagName)
 
         val cachedOcrImage = redisService.getCachedImage(cachedImageId)
 
@@ -79,8 +78,7 @@ class ImageService (
 
         val image = getImage(imageId!!, userId)
 
-        val tag = tagRepository.findByName(tagName)
-            ?: tagRepository.save(Tag(name = tagName))
+        val tag = getTag(tagName)
 
         image.insight = imageInsight
         image.folder = folder
@@ -95,6 +93,11 @@ class ImageService (
             )
         )
     }
+
+    private fun getTag(tagName: String): Tag = (tagRepository.findByName(tagName)
+        ?: tagRepository.save(
+            Tag.builder().name(tagName).build()
+        ))
 
     fun saveUncategorizedImage(userId: Long, file: MultipartFile): ApiResponse<ImageResponseDTO.SaveResponseDTO> {
         imageValidator.validateImage(file)
@@ -133,7 +136,7 @@ class ImageService (
 
     fun getImageInfo(userId: Long, imageId: Long): ApiResponse<ImageResponseDTO.ImageInfoDTO> {
         val image = getImage(imageId, userId)
-        val daysUntilDeltion = if(image.isCategorized) null
+        val daysUntilDeletion = if(image.isCategorized) null
         else Duration.between(LocalDateTime.now(), image.scheduledDeleteAt).toDays()
         return ApiResponse<ImageResponseDTO.ImageInfoDTO>(
             success = true,
@@ -144,6 +147,7 @@ class ImageService (
                 tag = image.tag?.name,
                 isCategorized = image.isCategorized,
                 scheduledDeleteAt = image.scheduledDeleteAt,
+                daysUntilDeletion = daysUntilDeletion
             )
         )
     }

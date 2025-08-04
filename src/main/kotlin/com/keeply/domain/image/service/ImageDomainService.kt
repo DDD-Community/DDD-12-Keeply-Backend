@@ -19,19 +19,21 @@ class ImageDomainService(
     private val fcmService: FcmService
 ) {
     fun saveImage(insight: String?, user: User, folder: Folder?, tag: Tag?, base64Image: String): Image{
-        val image = Image(
-            insight = insight,
-            user = user,
-            folder = folder,
-            tag = tag,
-        )
+
+        val image = Image.builder()
+            .insight(insight)
+            .user(user)
+            .folder(folder)
+            .tag(tag)
+            .build()
         imageRepository.save(image)
 
         val bytes = Base64.getDecoder().decode(base64Image)
         val s3Key = s3Service.uploadBase64Image(user.id, image.id!!, bytes)
-        image.s3Key = s3Key
 
+        image.s3Key = s3Key
         image.size += bytes.size
+
         user.usedStorageSize = user.usedStorageSize + bytes.size
 
         if (user.usedStorageSize >= user.storageLimit*0.8) {
