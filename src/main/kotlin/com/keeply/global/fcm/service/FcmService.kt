@@ -20,8 +20,8 @@ class FcmService(
                 .setToken(user.fcmToken)  // 유저의 FCM 토큰 필요
                 .setNotification(
                     Notification.builder()
-                        .setTitle("저장 용량 초과")
-                        .setBody("저장 공간이 가득 찼습니다. 필요 없는 이미지를 삭제해주세요.")
+                        .setTitle("저장 용량 초과 주의")
+                        .setBody("저장 공간의 80%에 도달했습니다. 필요 없는 이미지를 삭제해주세요.")
                         .build()
                 )
                 .build()
