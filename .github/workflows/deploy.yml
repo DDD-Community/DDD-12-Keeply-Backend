@@ -72,7 +72,16 @@ jobs:
             expiration: 1209600
         " > src/main/resources/application.yml
     
-
+    - name: Create credentials files
+      run: |
+        mkdir -p $HOME/credentials
+        # Google Vision API JSON
+        echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}" > $HOME/credentials/vision.json
+        echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/credentials/vision.json" >> $GITHUB_ENV
+        # Firebase Admin SDK JSON
+        echo "${{ secrets.FIREBASE_CREDENTIAL_JSON }}" > $HOME/credentials/firebase.json
+        echo "FIREBASE_CREDENTIAL_JSON_PATH=$HOME/credentials/firebase.json" >> $GITHUB_ENV
+    
     # gradle wrapper 파일에 실행 권한을 부여
     # gradle wrapper = 개발자가 특정 버전의 Gradle을 미리 설치하지 않고도 Gradle 빌드를 실행할 수 있게 해주는 편리한 도구        
     - name: Grant execute permission for gradlew
@@ -114,5 +123,5 @@ jobs:
         echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
         chmod 600 private_key.pem
         scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/keeply-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/keeply.jar
-        ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "pgrep java | xargs kill -9; nohup java -jar /home/${{ secrets.EC2_USERNAME }}/keeply.jar > app.log 2>&1 &"
+        ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "pgrep java | xargs kill -9; /home/${{ secrets.EC2_USERNAME }}/deploy.sh"
         rm -f private_key.pem
