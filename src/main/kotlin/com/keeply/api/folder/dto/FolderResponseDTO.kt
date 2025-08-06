@@ -2,6 +2,7 @@ package com.keeply.api.folder.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.v3.oas.annotations.media.Schema
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 class FolderResponseDTO {
@@ -33,7 +34,7 @@ class FolderResponseDTO {
         val isCategorized: Boolean,
         @Schema(description = "미분류 이미지 삭제 예정 시각")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-        val scheduledDeleteAt: LocalDateTime? = null,
+        val scheduledDeleteAt: LocalDate? = null,
         @Schema(description = "미분류 이미지 보관 남은 일수")
         val daysUntilDeletion: Long? = null,
     )

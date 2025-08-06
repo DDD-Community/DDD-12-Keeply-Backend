@@ -5,6 +5,7 @@ import com.keeply.domain.tag.entity.Tag
 import com.keeply.domain.user.entity.User
 import com.keeply.global.entity.BaseTimeEntity
 import jakarta.persistence.*
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
@@ -30,7 +31,7 @@ class Image(
     var size: Long = 0,
 
     var isCategorized: Boolean = true,
-    var scheduledDeleteAt: LocalDateTime? = null
+    var scheduledDeleteAt: LocalDate? = null
 
 ) : BaseTimeEntity() {
     companion object {
@@ -45,7 +46,7 @@ class Image(
         private var tag: Tag? = null
         private var size: Long = 0
         private var isCategorized: Boolean = true
-        private var scheduledDeleteAt: LocalDateTime? = null
+        private var scheduledDeleteAt: LocalDate? = null
 
         fun insight(insight: String?) = apply { this.insight = insight }
         fun s3Key(s3Key: String?) = apply { this.s3Key = s3Key }
@@ -54,7 +55,7 @@ class Image(
         fun tag(tag: Tag?) = apply { this.tag = tag }
         fun size(size: Long) = apply { this.size = size }
         fun isCategorized(isCategorized: Boolean) = apply {this.isCategorized = isCategorized }
-        fun scheduledDeleteAt(date: LocalDateTime?) = apply { this.scheduledDeleteAt = date}
+        fun scheduledDeleteAt(date: LocalDate?) = apply { this.scheduledDeleteAt = date}
 
         fun build(): Image = Image(
             insight = insight,
