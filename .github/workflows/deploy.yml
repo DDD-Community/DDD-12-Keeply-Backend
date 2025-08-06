@@ -34,6 +34,16 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Create credentials files
+      run: |
+        mkdir -p $HOME/credentials
+        # Google Vision API JSON
+        echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}" > $HOME/credentials/vision.json
+        echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/credentials/vision.json" >> $GITHUB_ENV
+        # Firebase Admin SDK JSON
+        echo "${{ secrets.FIREBASE_CREDENTIAL_JSON }}" > $HOME/credentials/firebase.json
+        echo "FIREBASE_CREDENTIAL_JSON_PATH=$HOME/credentials/firebase.json" >> $GITHUB_ENV
+        
     - name: Create application.yml
       run: |
         mkdir -p src/main/resources
@@ -75,15 +85,6 @@ jobs:
         GOOGLE_APPLICATION_CREDENTIALS: $HOME/credentials/vision.json
         FIREBASE_CREDENTIAL_JSON_PATH: $HOME/credentials/firebase.json
         
-    - name: Create credentials files
-      run: |
-        mkdir -p $HOME/credentials
-        # Google Vision API JSON
-        echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}" > $HOME/credentials/vision.json
-        echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/credentials/vision.json" >> $GITHUB_ENV
-        # Firebase Admin SDK JSON
-        echo "${{ secrets.FIREBASE_CREDENTIAL_JSON }}" > $HOME/credentials/firebase.json
-        echo "FIREBASE_CREDENTIAL_JSON_PATH=$HOME/credentials/firebase.json" >> $GITHUB_ENV
     
     # gradle wrapper 파일에 실행 권한을 부여
     # gradle wrapper = 개발자가 특정 버전의 Gradle을 미리 설치하지 않고도 Gradle 빌드를 실행할 수 있게 해주는 편리한 도구        
