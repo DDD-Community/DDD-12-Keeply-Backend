@@ -5,7 +5,11 @@ import java.time.LocalDateTime
 
 data class HomeResponseDTO(
     val userId: Long,
-    val imageCount: Long,
+    val imageCount: Int,
+    val uncategorizedImageCount: Int,
+    val uncategorizedImageList: List<ImageInfo>,
+    val scheduledToDeleteImageCount: Int,
+    val scheduledToDeleteImageList: List<ImageInfo>,
     val recentImages: List<ImageInfo>,
     val recentFolders: List<FolderInfo>,
     val recentSavedImages: List<ImageInfo>

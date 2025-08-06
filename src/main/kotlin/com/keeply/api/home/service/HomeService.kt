@@ -8,6 +8,7 @@ import com.keeply.domain.image.repository.ImageRepository
 import com.keeply.global.aws.s3.S3Service
 import com.keeply.global.dto.ApiResponse
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class HomeService(
@@ -19,7 +20,40 @@ class HomeService(
         val imagesOrderByUpdatedAtDesc = imageRepository.findAllByUserIdOrderByUpdatedAtDesc(userId)
         val foldersOrderByUpdatedAtDesc = folderRepository.findAllByUserIdOrderByUpdatedAtDesc(userId)
 
-        val imageCount = imagesOrderByUpdatedAtDesc.size
+        var uncategorizedImageList: List<ImageInfo> = imagesOrderByUpdatedAtDesc
+            .mapNotNull{
+                image ->
+                if(image.folder == null) {
+                    ImageInfo(
+                        imageId = image.id!!,
+                        presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
+                        tag = image.tag?.name,
+                        insight = image.insight,
+                        updatedAt = image.updatedAt
+                    )
+                } else null
+            }
+
+        val uncategorizedImageCount = uncategorizedImageList.size
+        uncategorizedImageList = uncategorizedImageList.take(3)
+
+        var scheduledToDeleteImageList: List<ImageInfo> = imagesOrderByUpdatedAtDesc
+            .mapNotNull{
+                image ->
+                if(!image.isCategorized && image.scheduledDeleteAt!!.toLocalDate() <= LocalDate.now()) {
+                    ImageInfo(
+                        imageId = image.id!!,
+                        presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
+                        tag = image.tag?.name,
+                        insight = image.insight,
+                        updatedAt = image.updatedAt,
+                    )
+                } else null
+            }
+
+        val scheduledToDeleteImageCount = scheduledToDeleteImageList.size
+        scheduledToDeleteImageList = scheduledToDeleteImageList.take(3)
+
         val recentImages = imagesOrderByUpdatedAtDesc
             .take(3)
             .map{ image ->
@@ -58,7 +92,11 @@ class HomeService(
             success = true,
             response = HomeResponseDTO(
                 userId = userId,
-                imageCount = imageCount.toLong(),
+                imageCount = imagesOrderByUpdatedAtDesc.size,
+                uncategorizedImageCount = uncategorizedImageCount,
+                uncategorizedImageList = uncategorizedImageList,
+                scheduledToDeleteImageCount = scheduledToDeleteImageCount,
+                scheduledToDeleteImageList = scheduledToDeleteImageList,
                 recentImages = recentImages,
                 recentFolders = recentFolders,
                 recentSavedImages = recentSavedImages,
