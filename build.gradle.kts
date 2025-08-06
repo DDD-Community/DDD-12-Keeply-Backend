@@ -56,15 +56,22 @@ dependencies {
     implementation("com.google.cloud:google-cloud-vision:3.31.0")
 
     // Google Cloud Natural Language API (v2)
-//    implementation("com.google.cloud:google-cloud-language:2.14.2")
     implementation("com.google.cloud:google-cloud-language:2.64.0")
-
-    implementation("com.github.cretz.kastree:kastree-ast-psi:0.4.0")
 
     implementation("com.h2database:h2")
     implementation("io.netty:netty-resolver-dns-native-macos:4.1.121.Final:osx-x86_64")
 
+    implementation("software.amazon.awssdk:s3:2.25.48")
+    implementation("software.amazon.awssdk:lambda:2.25.48")
 
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+    //MockMultipart를 사용하기 위함.
+    implementation("org.springframework:spring-test")
+
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("com.google.firebase:firebase-admin:9.2.0")
 }
 
 allOpen {
