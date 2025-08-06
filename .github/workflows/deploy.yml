@@ -70,7 +70,7 @@ jobs:
             expiration: 999999999999999
           refresh-token:
             expiration: 1209600
-        "
+        " > src/main/resources/application.yml
     
 
     # gradle wrapper 파일에 실행 권한을 부여
