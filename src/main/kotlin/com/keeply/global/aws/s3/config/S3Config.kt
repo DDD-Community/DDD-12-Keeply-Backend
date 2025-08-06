@@ -22,10 +22,16 @@ class S3Config (
 ) {
     @Bean
     fun s3Client(): S3Client {
-        val credentials = AwsBasicCredentials.create(accessKey, secretKey)
+        val credentialsProvider = if (accessKey.isNotBlank() && secretKey.isNotBlank()) {
+            StaticCredentialsProvider.create(
+                AwsBasicCredentials.create(accessKey, secretKey)
+            )
+        } else {
+            DefaultCredentialsProvider.create()
+        }
         return S3Client.builder()
             .region(Region.of(region))
-            .credentialsProvider(DefaultCredentialsProvider.create())
+            .credentialsProvider(credentialsProvider)
             .build()
     }
 }
