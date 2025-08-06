@@ -58,21 +58,19 @@ jobs:
             time-zone: Asia/Seoul
             serialization:
               WRITE_DATES_AS_TIMESTAMPS: false
-    
         cloud:
           aws:
             region:
               static: ap-northeast-2
             s3:
               bucket: keeply-s3-bucket
-    
         jwt:
           secret: ${{ secrets.JWT_SECRET }}
           access-token:
             expiration: 999999999999999
           refresh-token:
             expiration: 1209600
-
+        "
     
 
     # gradle wrapper 파일에 실행 권한을 부여
