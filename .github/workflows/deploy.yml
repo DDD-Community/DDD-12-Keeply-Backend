@@ -72,7 +72,6 @@ jobs:
             expiration: 1209600
         " > src/main/resources/application.yml
       env:
-        JWT_SECRET: ${{ secrets.JWT_SECRET }}
         GOOGLE_APPLICATION_CREDENTIALS: $HOME/credentials/vision.json
         FIREBASE_CREDENTIAL_JSON_PATH: $HOME/credentials/firebase.json
         
