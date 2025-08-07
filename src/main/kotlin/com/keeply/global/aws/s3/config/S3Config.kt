@@ -11,10 +11,10 @@ import software.amazon.awssdk.services.s3.S3Client
 
 @Configuration
 class S3Config (
-    @Value("\${cloud.aws.credentials.accessKey}")
+    @Value("\${cloud.aws.credentials.accessKey:}")
     private val accessKey: String,
 
-    @Value("\${cloud.aws.credentials.secretKey}")
+    @Value("\${cloud.aws.credentials.secretKey:}")
     private val secretKey: String,
 
     @Value("\${cloud.aws.region.static}")
