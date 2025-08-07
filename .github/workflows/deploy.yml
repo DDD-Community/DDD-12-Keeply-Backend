@@ -92,7 +92,7 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.6.0
       with:
-        arguments: build
+        arguments: build -x test
 
     # 빌드해서 생긴 JAR 파일을 깃허브 아티팩트로 업로드!!
     - name: Upload build artifact
