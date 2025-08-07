@@ -81,9 +81,6 @@ jobs:
           refresh-token:
             expiration: 1209600
         " > src/main/resources/application.yml
-      env:
-        GOOGLE_APPLICATION_CREDENTIALS: $HOME/credentials/vision.json
-        FIREBASE_CREDENTIAL_JSON_PATH: $HOME/credentials/firebase.json
         
     
     # gradle wrapper 파일에 실행 권한을 부여
