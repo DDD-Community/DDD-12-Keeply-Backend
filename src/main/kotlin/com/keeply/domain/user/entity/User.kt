@@ -45,7 +45,7 @@ class User(
         var profileImageUrl: String = ""
         var thumbnailImageUrl: String = ""
         var usedStorageSize: Long = 0
-        var storageLimit: Long = 0
+        var storageLimit: Long = 1L * 1024 * 1024 * 1024
         var fcmToken: String? = null
 
         fun id(id: Long) = apply { this.id = id }
