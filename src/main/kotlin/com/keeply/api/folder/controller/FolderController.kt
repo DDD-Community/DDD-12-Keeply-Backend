@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -35,11 +36,12 @@ class FolderController (
     }
 
     @GetMapping
-    @Operation(summary = "유저별 폴더 목록 검색 API")
+    @Operation(summary = "유저별 폴더 목록 조회 검색 API")
     fun getFolders(
-        @AuthenticationPrincipal userDetails: CustomUserDetails
+        @AuthenticationPrincipal userDetails: CustomUserDetails,
+        @RequestParam keyword: String?
     ): ResponseEntity<ApiResponse<FolderResponseDTO.FolderList>> {
-        val apiResponse = folderService.getFolders(userDetails.userId)
+        val apiResponse = folderService.getFolders(userDetails.userId, keyword)
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
 

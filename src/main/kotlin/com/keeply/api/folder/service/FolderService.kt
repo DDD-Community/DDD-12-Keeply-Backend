@@ -59,22 +59,26 @@ class FolderService (
         )
     }
 
-    fun getFolders(userId: Long): ApiResponse<FolderResponseDTO.FolderList> {
+    fun getFolders(userId: Long, keyword: String?): ApiResponse<FolderResponseDTO.FolderList> {
         val folderList = getFolderListByUserId(userId)
-        val result = folderList.map { folder ->
-            FolderResponseDTO.Folder(
-                folder.id!!,
-                folder.name,
-                folder.color,
-                folder.images.size,
-                folder.updatedAt
-            )
-        }
-        return ApiResponse<FolderResponseDTO.FolderList>(
+        val result = folderList
+            .filter { folder ->
+                keyword?.let {
+                    folder.name.contains(it, ignoreCase = true)
+                } ?: true
+            }
+            .map { folder ->
+                FolderResponseDTO.Folder(
+                    folder.id!!,
+                    folder.name,
+                    folder.color,
+                    folder.images.size,
+                    folder.updatedAt
+                )
+            }
+        return ApiResponse(
             success = true,
-            response = FolderResponseDTO.FolderList(
-                result
-            )
+            response = FolderResponseDTO.FolderList(result)
         )
     }
 
