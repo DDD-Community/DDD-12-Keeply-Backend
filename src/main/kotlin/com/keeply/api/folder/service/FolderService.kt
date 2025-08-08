@@ -61,6 +61,8 @@ class FolderService (
     }
 
     fun getFolders(userId: Long, requestDTO: GetFoldersRequestDTO): ApiResponse<FolderResponseDTO.FolderList> {
+        folderValidator.validateGetFolders(requestDTO)
+
         val keyword = requestDTO.keyword
         val sortBy = requestDTO.sortBy
         val orderBy = requestDTO.orderBy
@@ -169,10 +171,11 @@ class FolderService (
             ?: throw Exception("존재하지 않는 폴더입니다.")
 
     private fun getFolderListByUserId(userId: Long, sortBy: String, orderBy: String): List<Folder> {
-        var folders: List<Folder> = emptyList()
-        if(sortBy == "updatedAt") {
-            if(orderBy == "desc") folders = folderRepository.findAllByUserIdOrderByUpdatedAtDesc(userId)
-            else if(orderBy =="asc") folders = folderRepository.findAllByUserIdOrderByUpdatedAtAsc(userId)
+        val folderList = folderRepository.findAllByUserId(userId)
+        var folders = when(sortBy) {
+            "updatedAt" -> if(orderBy == "asc") folderList.sortedBy{ it.updatedAt } else folderList.sortedByDescending { it.updatedAt }
+            "imageCount" -> if(orderBy == "asc") folderList.sortedBy{ it.images.size } else folderList.sortedByDescending { it.images.size }
+            else -> folderList
         }
         return folders
     }
