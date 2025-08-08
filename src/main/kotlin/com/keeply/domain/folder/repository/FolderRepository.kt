@@ -8,4 +8,5 @@ interface FolderRepository: JpaRepository<Folder, Long> {
     fun findAllByUserId(userId: Long): List<Folder>
     fun findByUserIdAndId(userId: Long, folderId: Long): Folder?
     fun findAllByUserIdOrderByUpdatedAtDesc(userId: Long): List<Folder>
+    fun findAllByUserIdOrderByUpdatedAtAsc(userId: Long): List<Folder>
 }

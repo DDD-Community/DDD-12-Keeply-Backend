@@ -39,9 +39,16 @@ class FolderController (
     @Operation(summary = "유저별 폴더 목록 조회 검색 API")
     fun getFolders(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @RequestParam keyword: String?
+        @RequestParam(required = false) keyword: String?,
+        @RequestParam(required = false, defaultValue = "updatedAt") sortBy: String,
+        @RequestParam(required = false, defaultValue = "desc") orderBy: String,
     ): ResponseEntity<ApiResponse<FolderResponseDTO.FolderList>> {
-        val apiResponse = folderService.getFolders(userDetails.userId, keyword)
+        val requestDTO = FolderRequestDTO.GetFoldersRequestDTO(
+            keyword = keyword,
+            sortBy = sortBy,
+            orderBy = orderBy
+        )
+        val apiResponse = folderService.getFolders(userDetails.userId, requestDTO)
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
 

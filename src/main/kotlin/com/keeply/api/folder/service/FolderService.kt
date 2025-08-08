@@ -1,6 +1,7 @@
 package com.keeply.api.folder.service
 
 import com.keeply.api.folder.dto.FolderRequestDTO
+import com.keeply.api.folder.dto.FolderRequestDTO.GetFoldersRequestDTO
 import com.keeply.api.folder.dto.FolderResponseDTO
 import com.keeply.api.folder.validator.FolderValidator
 import com.keeply.domain.folder.entity.Folder
@@ -59,8 +60,12 @@ class FolderService (
         )
     }
 
-    fun getFolders(userId: Long, keyword: String?): ApiResponse<FolderResponseDTO.FolderList> {
-        val folderList = getFolderListByUserId(userId)
+    fun getFolders(userId: Long, requestDTO: GetFoldersRequestDTO): ApiResponse<FolderResponseDTO.FolderList> {
+        val keyword = requestDTO.keyword
+        val sortBy = requestDTO.sortBy
+        val orderBy = requestDTO.orderBy
+
+        val folderList = getFolderListByUserId(userId, sortBy, orderBy)
         val result = folderList
             .filter { folder ->
                 keyword?.let {
@@ -163,7 +168,14 @@ class FolderService (
         folderRepository.findByUserIdAndId(userId, folderId)
             ?: throw Exception("존재하지 않는 폴더입니다.")
 
-    private fun getFolderListByUserId(userId: Long): List<Folder> = folderRepository.findAllByUserId(userId)
+    private fun getFolderListByUserId(userId: Long, sortBy: String, orderBy: String): List<Folder> {
+        var folders: List<Folder> = emptyList()
+        if(sortBy == "updatedAt") {
+            if(orderBy == "desc") folders = folderRepository.findAllByUserIdOrderByUpdatedAtDesc(userId)
+            else if(orderBy =="asc") folders = folderRepository.findAllByUserIdOrderByUpdatedAtAsc(userId)
+        }
+        return folders
+    }
 
     private fun getFolderByUserIdAndFolderName(userId: Long, folderName: String): Folder? =
         folderRepository.findByUserIdAndName(userId, folderName)
