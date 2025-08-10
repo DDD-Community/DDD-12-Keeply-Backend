@@ -112,7 +112,7 @@ class ImageService (
             base64Image = base64Image,
         )
         image.isCategorized = false
-        image.scheduledDeleteAt = image.createdAt!!.toLocalDate().plusDays(30)
+        image.scheduledDeleteAt = image.createdAt!!.plusDays(30)
         return ApiResponse<ImageResponseDTO.SaveResponseDTO>(
             success = true,
             response = ImageResponseDTO.SaveResponseDTO(

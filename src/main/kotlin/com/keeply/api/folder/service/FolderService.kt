@@ -94,12 +94,13 @@ class FolderService (
 
         val result = folder.images.map { image ->
             FolderResponseDTO.ImageInfo(
-                image.id!!,
-                s3Service.generatePresignedUrl(image.s3Key!!),
-                image.insight,
-                image.tag!!.name,
-                image.isCategorized,
-                image.scheduledDeleteAt,
+                imageId = image.id!!,
+                presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
+                insight = image.insight,
+                tag = image.tag?.name,
+                isCategorized = image.isCategorized,
+                scheduledDeleteAt = image.scheduledDeleteAt,
+                updatedAt = image.updatedAt
             )
         }
 
@@ -123,7 +124,8 @@ class FolderService (
                 image.tag?.name,
                 image.isCategorized,
                 image.scheduledDeleteAt,
-                daysUntilDeletion
+                daysUntilDeletion,
+                image.updatedAt
             )
         }
 

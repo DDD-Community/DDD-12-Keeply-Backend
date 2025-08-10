@@ -53,7 +53,7 @@ class ImageController (
     fun saveImageWithoutFolder(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @RequestPart("file") file: MultipartFile,
-        @RequestParam("folder", required = false) folderId: Long?,
+        @RequestParam("folderId", required = false) folderId: Long?,
     ): ResponseEntity<ApiResponse<ImageResponseDTO.SaveResponseDTO>> {
         val apiResponse = if(folderId==null) imageService.saveUncategorizedImage(userDetails.userId, file)
         else imageService.saveImage(userDetails.userId, file, folderId)

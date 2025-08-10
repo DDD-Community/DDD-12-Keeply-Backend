@@ -40,7 +40,7 @@ class HomeService(
         var scheduledToDeleteImageList: List<ImageInfo> = imagesOrderByUpdatedAtDesc
             .mapNotNull{
                 image ->
-                if(!image.isCategorized && image.scheduledDeleteAt!! == LocalDate.now()) {
+                if(!image.isCategorized && image.scheduledDeleteAt!!.toLocalDate() == LocalDate.now()) {
                     ImageInfo(
                         imageId = image.id!!,
                         presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),

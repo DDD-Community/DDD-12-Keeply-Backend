@@ -31,7 +31,7 @@ class Image(
     var size: Long = 0,
 
     var isCategorized: Boolean = true,
-    var scheduledDeleteAt: LocalDate? = null
+    var scheduledDeleteAt: LocalDateTime? = null
 
 ) : BaseTimeEntity() {
     companion object {
@@ -46,7 +46,7 @@ class Image(
         private var tag: Tag? = null
         private var size: Long = 0
         private var isCategorized: Boolean = true
-        private var scheduledDeleteAt: LocalDate? = null
+        private var scheduledDeleteAt: LocalDateTime? = null
 
         fun insight(insight: String?) = apply { this.insight = insight }
         fun s3Key(s3Key: String?) = apply { this.s3Key = s3Key }
@@ -55,7 +55,7 @@ class Image(
         fun tag(tag: Tag?) = apply { this.tag = tag }
         fun size(size: Long) = apply { this.size = size }
         fun isCategorized(isCategorized: Boolean) = apply {this.isCategorized = isCategorized }
-        fun scheduledDeleteAt(date: LocalDate?) = apply { this.scheduledDeleteAt = date}
+        fun scheduledDeleteAt(scheduledDeletedAt: LocalDateTime?) = apply { this.scheduledDeleteAt = scheduledDeletedAt}
 
         fun build(): Image = Image(
             insight = insight,

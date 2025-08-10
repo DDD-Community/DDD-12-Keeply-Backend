@@ -33,10 +33,12 @@ class FolderResponseDTO {
         @Schema(description = "폴더 저장, 미분류 여부")
         val isCategorized: Boolean,
         @Schema(description = "미분류 이미지 삭제 예정 시각")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-        val scheduledDeleteAt: LocalDate? = null,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+        val scheduledDeleteAt: LocalDateTime? = null,
         @Schema(description = "미분류 이미지 보관 남은 일수")
         val daysUntilDeletion: Long? = null,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        val updatedAt: LocalDateTime? = null,
     )
 
     data class FolderList(
