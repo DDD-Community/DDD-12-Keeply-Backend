@@ -121,6 +121,26 @@ class ImageService (
         )
     }
 
+    fun saveImage(userId: Long, file: MultipartFile, folderId: Long): ApiResponse<ImageResponseDTO.SaveResponseDTO> {
+        imageValidator.validateImage(file)
+        val base64Image = Base64.getEncoder().encodeToString(file.bytes)
+        val user = getUser(userId)
+        val folder = getFolder(userId, folderId)
+        val image = imageDomainService.saveImage(
+            insight = null,
+            user = user,
+            folder = folder,
+            tag = null,
+            base64Image = base64Image,
+        )
+        return ApiResponse<ImageResponseDTO.SaveResponseDTO>(
+            success = true,
+            response = ImageResponseDTO.SaveResponseDTO(
+                imageId = image.id!!
+            )
+        )
+    }
+
     fun moveImage(userId: Long, imageId: Long, requestDTO: ImageRequestDTO.MoveImageRequestDTO): ApiResponse<ImageResponseDTO.MoveImageResponseDTO> {
         imageValidator.validateMoveRequest(requestDTO)
         val folder = getFolder(userId, requestDTO.folderId)
@@ -177,7 +197,4 @@ class ImageService (
 
     private fun getFolder(userId: Long, folderId: Long): Folder = (folderRepository.findByUserIdAndId(userId, folderId)
         ?: throw Exception("폴더를 찾을 수 없습니다."))
-
-
-
 }
