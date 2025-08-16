@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component
 @Component
 class FolderValidator {
     private val allowedColors = Constants.Colors.FOLDER_COLORS
-    private val allowedSortBy = arrayOf("updatedAt", "imageCount")
+    private val allowedSortBy = setOf("updatedAt", "imageCount")
+    private val allowedOrderBy = setOf("asc", "desc")
     fun validateCreate(requestDTO: FolderRequestDTO.CreateRequestDTO) {
         when {
             requestDTO.folderName.isBlank() -> throw Exception("폴더명은 공백일 수 없습니다.")
@@ -25,8 +26,11 @@ class FolderValidator {
     }
 
     fun validateGetFolders(requestDTO: FolderRequestDTO.GetFoldersRequestDTO) {
-        when {
-            !allowedSortBy.contains(requestDTO.sortBy) -> throw Exception("정렬기준 파라미터는 " + allowedSortBy.asList() + " 중 하나 입니다.")
+        require(requestDTO.sortBy in allowedSortBy) {
+            "정렬기준(sortBy)은 ${allowedSortBy.joinToString(", ")} 중 하나여야 합니다."
+        }
+        require(requestDTO.orderBy in allowedOrderBy) {
+            "정렬방향(orderBy)은 ${allowedOrderBy.joinToString(", ")} 중 하나여야 합니다."
         }
     }
 }
