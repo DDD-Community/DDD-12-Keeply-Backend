@@ -26,6 +26,7 @@ data class ImageInfo(
 
 data class FolderInfo(
     val folderId: Long,
+    val folderName: String,
     val color: String,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val updatedAt: LocalDateTime? = null,

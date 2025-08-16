@@ -70,6 +70,7 @@ class HomeService(
             .map{ folder ->
                 FolderInfo(
                     folderId = folder.id!!,
+                    folderName = folder.name,
                     color = folder.color,
                     updatedAt = folder.updatedAt,
                     imageCount = folder.images.count()
