@@ -19,6 +19,7 @@ data class ImageInfo(
     val imageId: Long,
     val presignedUrl: String,
     val tag: String? = null,
+    val tagColor: String? = null,
     val insight: String? = null,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val updatedAt: LocalDateTime? = null,

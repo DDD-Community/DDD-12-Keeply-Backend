@@ -30,6 +30,7 @@ class FolderResponseDTO {
         val insight: String? = null,
         @Schema(description = "태그")
         val tag: String? = null,
+        val tagColor: String? = null,
         @Schema(description = "폴더 저장, 미분류 여부")
         val isCategorized: Boolean,
         @Schema(description = "미분류 이미지 삭제 예정 시각")

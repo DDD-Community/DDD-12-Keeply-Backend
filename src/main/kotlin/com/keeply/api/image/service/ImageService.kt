@@ -165,7 +165,7 @@ class ImageService (
                 imageId = image.id!!,
                 presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
                 insight = image.insight,
-                tag = image.tag?.name,
+                tag = image.folder?.name,
                 isCategorized = image.isCategorized,
                 scheduledDeleteAt = image.scheduledDeleteAt,
                 daysUntilDeletion = daysUntilDeletion
