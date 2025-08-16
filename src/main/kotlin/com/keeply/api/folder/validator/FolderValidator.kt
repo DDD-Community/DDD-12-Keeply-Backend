@@ -10,19 +10,13 @@ class FolderValidator {
     private val allowedSortBy = setOf("updatedAt", "imageCount")
     private val allowedOrderBy = setOf("asc", "desc")
     fun validateCreate(requestDTO: FolderRequestDTO.CreateRequestDTO) {
-        when {
-            requestDTO.folderName.isBlank() -> throw Exception("폴더명은 공백일 수 없습니다.")
-            requestDTO.folderName.length > 20 -> throw Exception("폴더명은 20자로 제한됩니다.")
-//            !allowedColors.contains(requestDTO.color) -> throw Exception("지원하지 않는 폴더 색상입니다.")
-        }
+        require(requestDTO.folderName.isNotBlank()) { "폴더명은 공백일 수 없습니다." }
+        require(requestDTO.folderName.length <= 20) { "폴더명은 20자로 제한됩니다." }
     }
 
     fun validateUpdate(requestDTO: FolderRequestDTO.UpdateRequestDTO) {
-        when {
-            requestDTO.folderName.isBlank() -> throw Exception("폴더명은 공백일 수 없습니다.")
-            requestDTO.folderName.length > 20 -> throw Exception("폴더명은 20자로 제한됩니다.")
-//            !allowedColors.contains(requestDTO.color) -> throw Exception("지원하지 않는 폴더 색상입니다.")
-        }
+        require(requestDTO.folderName.isNotBlank()) { "폴더명은 공백일 수 없습니다." }
+        require(requestDTO.folderName.length <= 20) { "폴더명은 20자로 제한됩니다." }
     }
 
     fun validateGetFolders(requestDTO: FolderRequestDTO.GetFoldersRequestDTO) {
