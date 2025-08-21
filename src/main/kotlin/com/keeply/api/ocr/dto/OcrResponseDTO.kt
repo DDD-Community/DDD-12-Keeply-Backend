@@ -13,9 +13,5 @@ data class OcrResponseDTO(
     @Schema(description = """
         추출된 텍스트
     """)
-    var detectedText: String? = null,
-    @Schema(description = """
-        추천 태그
-    """)
-    var recommendedTags: List<String>? = null
+    var detectedText: String? = null
 )

@@ -27,15 +27,18 @@ class OcrService(
         val cachedImageId = UUID.randomUUID().toString()
         val imageBytes = file!!.bytes
 
-        val detectedText = googleVisionAPI.extractTextFromImage(file)
+        var detectedText: String = ""
 
-        val recommendedTags = googleVisionAPI.classifyText(detectedText)
+
+        if(!requestDTO.isSkip) {
+            detectedText = googleVisionAPI.extractTextFromImage(file)
+        }
 
         redisService.cacheImage(cachedImageId, imageBytes, detectedText)
 
         return ApiResponse(
             success = true,
-            response = OcrResponseDTO(cachedImageId, detectedText, recommendedTags)
+            response = OcrResponseDTO(cachedImageId, detectedText)
         )
     }
 
@@ -48,13 +51,11 @@ class OcrService(
         val file = s3Service.getMultipartFileFromS3(image.s3Key!!)
 
         val detectedText = googleVisionAPI.extractTextFromImage(file)
-        val recommendedTags = googleVisionAPI.classifyText(detectedText)
 
         return ApiResponse<OcrResponseDTO>(
             success = true,
             response = OcrResponseDTO(
-                detectedText = detectedText,
-                recommendedTags = recommendedTags
+                detectedText = detectedText
             )
         )
     }

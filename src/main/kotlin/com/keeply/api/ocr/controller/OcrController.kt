@@ -32,9 +32,10 @@ class OcrController (
         @AuthenticationPrincipal userDetails: CustomUserDetails,
         @RequestParam("isNew") isNew: Boolean,
         @RequestParam("imageId", required = false) imageId: Long?,
+        @RequestParam("isSkip") isSkip: Boolean,
         @RequestPart("file") file: MultipartFile?
     ): ResponseEntity<ApiResponse<OcrResponseDTO>> {
-        val requestDTO = OcrRequestDTO(isNew, imageId)
+        val requestDTO = OcrRequestDTO(isNew, imageId, isSkip)
         val apiResponse = if (requestDTO.isNew) {
             ocrService.analyzeNewImage(requestDTO, file)
         } else {
