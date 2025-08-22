@@ -40,6 +40,8 @@ class ImageDomainService(
             fcmService.sendStorageLimitNotification(user)
         }
 
+        fcmService.sendStorageStatusNotification(user)
+
         return image
     }
 

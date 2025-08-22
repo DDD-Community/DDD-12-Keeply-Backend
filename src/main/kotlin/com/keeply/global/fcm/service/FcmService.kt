@@ -5,6 +5,7 @@ import com.google.firebase.messaging.Message
 import com.keeply.domain.image.entity.Image
 import com.keeply.domain.user.entity.User
 import org.springframework.stereotype.Service
+import kotlin.math.round
 
 @Service
 class FcmService(
@@ -30,6 +31,17 @@ class FcmService(
                 .putData("body", "1일이내에 삭제될 이미지가 ${scheduledToDeleteImages.size}개 있습니다.")
                 .build()
 
+            firebaseMessaging.send(message)
+        }
+    }
+
+    fun sendStorageStatusNotification(user: User) {
+        if(user.userSetting!!.storageNotificationEnabled) {
+            val message = Message.builder()
+                .setToken(user.fcmToken)
+                .putData("title", "저장공간 상태 알림")
+                .putData("body", "할당된 저장용량의 ${round((user.usedStorageSize / user.storageLimit) * 100.0)} 사용했습니다.")
+                .build()
             firebaseMessaging.send(message)
         }
     }
