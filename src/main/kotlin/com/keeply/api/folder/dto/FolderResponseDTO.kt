@@ -2,7 +2,6 @@ package com.keeply.api.folder.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.v3.oas.annotations.media.Schema
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 class FolderResponseDTO {

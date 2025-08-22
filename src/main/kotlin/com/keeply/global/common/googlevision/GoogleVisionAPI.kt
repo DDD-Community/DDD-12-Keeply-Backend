@@ -11,7 +11,6 @@ import com.google.cloud.vision.v1.ImageAnnotatorClient
 import com.google.protobuf.ByteString
 import org.springframework.stereotype.Component
 import org.springframework.web.multipart.MultipartFile
-import kotlin.use
 
 @Component
 class GoogleVisionAPI {

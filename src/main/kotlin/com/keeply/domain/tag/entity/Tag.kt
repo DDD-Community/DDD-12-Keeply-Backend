@@ -1,6 +1,5 @@
 package com.keeply.domain.tag.entity
 
-import com.keeply.domain.image.entity.Image
 import com.keeply.global.entity.BaseTimeEntity
 import jakarta.persistence.*
 
