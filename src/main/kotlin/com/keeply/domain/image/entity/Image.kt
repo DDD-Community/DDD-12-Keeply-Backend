@@ -5,7 +5,6 @@ import com.keeply.domain.tag.entity.Tag
 import com.keeply.domain.user.entity.User
 import com.keeply.global.entity.BaseTimeEntity
 import jakarta.persistence.*
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Entity
