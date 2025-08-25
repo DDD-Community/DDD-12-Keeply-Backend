@@ -41,7 +41,7 @@ class FolderService (
         var folder = getFolderByUserIdAndFolderName(userId, folderName)
         if(folder != null) throw Exception("이미 존재하는 폴더입니다.")
         folder = Folder.builder()
-            .name(folderName)
+            .name(setFolderName(folderName,userId))
             .color(color)
             .user(user)
             .build()
@@ -144,7 +144,7 @@ class FolderService (
     fun updateFolder(userId: Long, folderId: Long, requestDTO: FolderRequestDTO.UpdateRequestDTO): ApiResponse<FolderResponseDTO.Folder> {
         folderValidator.validateUpdate(requestDTO)
         val folder = getFolderByUserIdAndFolderId(userId, folderId)
-        folder.name = requestDTO.folderName
+        folder.name = setFolderName(requestDTO.folderName, userId)
         folder.color = requestDTO.color
         return ApiResponse<FolderResponseDTO.Folder>(
             success = true,
@@ -190,4 +190,10 @@ class FolderService (
 
     private fun getUser(userId: Long): User? =
         userRepository.findById(userId).get()
+
+    private fun setFolderName(folderName: String, userId: Long): String {
+        val folderCount = folderRepository.countByUserIdAndName(userId, folderName)
+        if(folderCount>0) return folderName + folderCount.toString()
+        else return folderName
+    }
 }
