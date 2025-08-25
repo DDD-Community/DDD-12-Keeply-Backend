@@ -199,7 +199,7 @@ class FolderService (
 
     private fun setFolderName(folderName: String, userId: Long): String {
         val folderCount = folderRepository.countByUserIdAndName(userId, folderName)
-        if(folderCount>0) return folderName + folderCount.toString()
+        if(folderCount>0) return folderName + (folderCount+1).toString()
         else return folderName
     }
 }
