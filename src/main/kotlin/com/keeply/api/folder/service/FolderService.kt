@@ -198,8 +198,20 @@ class FolderService (
         userRepository.findById(userId).get()
 
     private fun setFolderName(folderName: String, userId: Long): String {
-        val folderCount = folderRepository.countByUserIdAndName(userId, folderName)
-        if(folderCount>0) return folderName + (folderCount+1).toString()
-        else return folderName
+        val existFolderNames = folderRepository.findAllNamesByUserIdAndFolderName(userId, folderName)
+        if (existFolderNames.isEmpty()) return folderName
+
+        val usedIndexes = existFolderNames.mapNotNull {
+            val regex = Regex("^$folderName(\\d+)$")
+            regex.find(it)?.groupValues?.get(1)?.toIntOrNull()
+                ?: if (it == folderName) 1 else null
+        }.toSet()
+
+        var newIndex = 1
+        while (usedIndexes.contains(newIndex)) {
+            newIndex++
+        }
+
+        return if (newIndex == 1) folderName else "$folderName($newIndex)"
     }
 }
