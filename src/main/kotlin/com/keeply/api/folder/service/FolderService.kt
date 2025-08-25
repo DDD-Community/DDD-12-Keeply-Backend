@@ -39,7 +39,7 @@ class FolderService (
             ?: throw Exception("존재하지 않는 유저입니다.")
 
         var folder = getFolderByUserIdAndFolderName(userId, folderName)
-        if(folder != null) throw Exception("이미 존재하는 폴더입니다.")
+
         folder = Folder.builder()
             .name(setFolderName(folderName,userId))
             .color(color)
