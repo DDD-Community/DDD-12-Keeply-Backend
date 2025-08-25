@@ -212,6 +212,6 @@ class FolderService (
             newIndex++
         }
 
-        return if (newIndex == 1) folderName else "$folderName($newIndex)"
+        return if (newIndex == 1) folderName else "$folderName$newIndex"
     }
 }
