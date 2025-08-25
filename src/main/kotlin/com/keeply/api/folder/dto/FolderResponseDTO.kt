@@ -17,6 +17,11 @@ class FolderResponseDTO {
         @Schema(description = "폴더 최근 업데이트 시각")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         val updatedAt: LocalDateTime? = null,
+        @Schema(description = "폴더명 중복 알림 여부")
+        val isDuplicate: Boolean = false,
+        @Schema(description = "폴더명 중복 알림 메시지")
+        val duplicatedMessage: String = "",
+
     )
 
     @Schema(name = "Folder_ImageInfo", description = "folderAPI_ImageInfo")

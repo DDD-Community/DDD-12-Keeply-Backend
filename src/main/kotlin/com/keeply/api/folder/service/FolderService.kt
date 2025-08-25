@@ -51,11 +51,14 @@ class FolderService (
         return ApiResponse(
             success = true,
             response = FolderResponseDTO.Folder(
-                folder.id!!,
-                folder.name,
-                folder.color,
-                folder.images.size,
-                folder.updatedAt
+                folderId = folder.id!!,
+                folderName = folder.name,
+                color = folder.color,
+                imageCount = folder.images.size,
+                updatedAt = folder.updatedAt,
+                isDuplicate = folder.name != folderName,
+                duplicatedMessage = if(folder.name != folderName) "이미 존재하는 폴더명 입니다. \'${folder.name}\'로 추가되었습니다."
+                else "",
             )
         )
     }
@@ -153,7 +156,10 @@ class FolderService (
                 folder.name,
                 folder.color,
                 folder.images.size,
-                folder.updatedAt
+                folder.updatedAt,
+                isDuplicate = folder.name != requestDTO.folderName,
+                duplicatedMessage = if(folder.name != requestDTO.folderName) "이미 존재하는 폴더명 입니다. \'${folder.name}\'로 추가되었습니다."
+                else "",
             )
         )
     }
