@@ -12,6 +12,7 @@ class Image(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long? = null,
 
+    @Column(length = 350)
     var insight: String? = null,
     var s3Key: String? = null,
 
