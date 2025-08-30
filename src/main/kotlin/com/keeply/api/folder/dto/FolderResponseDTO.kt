@@ -2,7 +2,6 @@ package com.keeply.api.folder.dto
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import io.swagger.v3.oas.annotations.media.Schema
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 class FolderResponseDTO {
@@ -18,6 +17,11 @@ class FolderResponseDTO {
         @Schema(description = "폴더 최근 업데이트 시각")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
         val updatedAt: LocalDateTime? = null,
+        @Schema(description = "폴더명 중복 알림 여부")
+        val isDuplicate: Boolean = false,
+        @Schema(description = "폴더명 중복 알림 메시지")
+        val duplicatedMessage: String = "",
+
     )
 
     @Schema(name = "Folder_ImageInfo", description = "folderAPI_ImageInfo")
@@ -30,13 +34,16 @@ class FolderResponseDTO {
         val insight: String? = null,
         @Schema(description = "태그")
         val tag: String? = null,
+        val tagColor: String? = null,
         @Schema(description = "폴더 저장, 미분류 여부")
         val isCategorized: Boolean,
         @Schema(description = "미분류 이미지 삭제 예정 시각")
-        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
-        val scheduledDeleteAt: LocalDate? = null,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+        val scheduledDeleteAt: LocalDateTime? = null,
         @Schema(description = "미분류 이미지 보관 남은 일수")
         val daysUntilDeletion: Long? = null,
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        val updatedAt: LocalDateTime? = null,
     )
 
     data class FolderList(

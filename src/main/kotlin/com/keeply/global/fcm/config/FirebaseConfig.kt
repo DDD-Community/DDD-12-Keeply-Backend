@@ -13,8 +13,8 @@ class FirebaseConfig {
     @Bean
     fun firebaseMessaging(): FirebaseMessaging {
         if (FirebaseApp.getApps().isEmpty()) {
-            val path = System.getenv("FIREBASE_CREDENTIAL_JSON")
-                ?: throw IllegalStateException("FIREBASE_CREDENTIAL_JSON is not set")
+            val path = System.getenv("FIREBASE_CREDENTIAL_JSON_PATH")
+                ?: throw IllegalStateException("FIREBASE_CREDENTIAL_JSON_PATH is not set")
 
             val serviceAccount = FileInputStream(path)
 

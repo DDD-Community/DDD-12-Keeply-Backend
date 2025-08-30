@@ -21,8 +21,7 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import java.time.Duration
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.util.Base64
+import java.util.*
 
 @Service
 @Transactional
@@ -112,11 +111,31 @@ class ImageService (
             base64Image = base64Image,
         )
         image.isCategorized = false
-        image.scheduledDeleteAt = image.createdAt!!.toLocalDate().plusDays(30)
+        image.scheduledDeleteAt = image.createdAt!!.plusDays(30)
         return ApiResponse<ImageResponseDTO.SaveResponseDTO>(
             success = true,
             response = ImageResponseDTO.SaveResponseDTO(
                 imageId = image.id!!,
+            )
+        )
+    }
+
+    fun saveImage(userId: Long, file: MultipartFile, folderId: Long): ApiResponse<ImageResponseDTO.SaveResponseDTO> {
+        imageValidator.validateImage(file)
+        val base64Image = Base64.getEncoder().encodeToString(file.bytes)
+        val user = getUser(userId)
+        val folder = getFolder(userId, folderId)
+        val image = imageDomainService.saveImage(
+            insight = null,
+            user = user,
+            folder = folder,
+            tag = null,
+            base64Image = base64Image,
+        )
+        return ApiResponse<ImageResponseDTO.SaveResponseDTO>(
+            success = true,
+            response = ImageResponseDTO.SaveResponseDTO(
+                imageId = image.id!!
             )
         )
     }
@@ -145,7 +164,7 @@ class ImageService (
                 imageId = image.id!!,
                 presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
                 insight = image.insight,
-                tag = image.tag?.name,
+                tag = image.folder?.name,
                 isCategorized = image.isCategorized,
                 scheduledDeleteAt = image.scheduledDeleteAt,
                 daysUntilDeletion = daysUntilDeletion
@@ -177,7 +196,4 @@ class ImageService (
 
     private fun getFolder(userId: Long, folderId: Long): Folder = (folderRepository.findByUserIdAndId(userId, folderId)
         ?: throw Exception("폴더를 찾을 수 없습니다."))
-
-
-
 }

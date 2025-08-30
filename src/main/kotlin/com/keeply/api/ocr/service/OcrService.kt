@@ -4,13 +4,13 @@ import com.keeply.api.ocr.dto.OcrRequestDTO
 import com.keeply.api.ocr.dto.OcrResponseDTO
 import com.keeply.api.ocr.validator.OcrValidator
 import com.keeply.domain.image.repository.ImageRepository
+import com.keeply.global.aws.s3.S3Service
 import com.keeply.global.common.googlevision.GoogleVisionAPI
 import com.keeply.global.dto.ApiResponse
 import com.keeply.global.redis.RedisService
-import com.keeply.global.aws.s3.S3Service
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
-import java.util.UUID
+import java.util.*
 
 @Service
 class OcrService(
@@ -27,15 +27,18 @@ class OcrService(
         val cachedImageId = UUID.randomUUID().toString()
         val imageBytes = file!!.bytes
 
-        val detectedText = googleVisionAPI.extractTextFromImage(file)
+        var detectedText: String = ""
 
-        val recommendedTags = googleVisionAPI.classifyText(detectedText)
+
+        if(!requestDTO.isSkip) {
+            detectedText = googleVisionAPI.extractTextFromImage(file)
+        }
 
         redisService.cacheImage(cachedImageId, imageBytes, detectedText)
 
         return ApiResponse(
             success = true,
-            response = OcrResponseDTO(cachedImageId, detectedText, recommendedTags)
+            response = OcrResponseDTO(cachedImageId, detectedText)
         )
     }
 
@@ -48,13 +51,11 @@ class OcrService(
         val file = s3Service.getMultipartFileFromS3(image.s3Key!!)
 
         val detectedText = googleVisionAPI.extractTextFromImage(file)
-        val recommendedTags = googleVisionAPI.classifyText(detectedText)
 
         return ApiResponse<OcrResponseDTO>(
             success = true,
             response = OcrResponseDTO(
-                detectedText = detectedText,
-                recommendedTags = recommendedTags
+                detectedText = detectedText
             )
         )
     }

@@ -1,6 +1,5 @@
 package com.keeply.api.login.dto
 
-import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.LocalDateTime
 
 data class KakaoUserInfo(

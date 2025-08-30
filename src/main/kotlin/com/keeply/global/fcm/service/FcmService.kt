@@ -2,30 +2,46 @@ package com.keeply.global.fcm.service
 
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
-import com.google.firebase.messaging.Notification
+import com.keeply.domain.image.entity.Image
 import com.keeply.domain.user.entity.User
-import com.keeply.domain.user.entity.UserSetting
-import com.keeply.domain.user.repository.UserSettingRepository
 import org.springframework.stereotype.Service
+import kotlin.math.round
 
 @Service
 class FcmService(
-    private val firebaseMessaging: FirebaseMessaging,
-    private val userSettingRepository: UserSettingRepository
+    private val firebaseMessaging: FirebaseMessaging
 ) {
     fun sendStorageLimitNotification(user: User) {
-        val userSetting: UserSetting = userSettingRepository.findByUser(user)!!
-        if(userSetting.storageNotificationEnabled) {
+        if(user.userSetting!!.storageNotificationEnabled) {
             val message = Message.builder()
                 .setToken(user.fcmToken)  // 유저의 FCM 토큰 필요
-                .setNotification(
-                    Notification.builder()
-                        .setTitle("저장 용량 초과 주의")
-                        .setBody("저장 공간의 80%에 도달했습니다. 필요 없는 이미지를 삭제해주세요.")
-                        .build()
-                )
+                .putData("title", "저장 용량 초과 주의")
+                .putData("body", "저장 공간의 80%에 도달했습니다. 필요 없는 이미지를 삭제해주세요.")
                 .build()
 
+            firebaseMessaging.send(message)
+        }
+    }
+
+    fun sendScheduledToDeleteImageNotification(user: User, scheduledToDeleteImages: List<Image>) {
+        if(user.userSetting!!.storageNotificationEnabled) {
+            val message = Message.builder()
+                .setToken(user.fcmToken)  // 유저의 FCM 토큰 필요
+                .putData("title", "미분류 이미지 삭제 예정 알림")
+                .putData("body", "1일이내에 삭제될 이미지가 ${scheduledToDeleteImages.size}개 있습니다.")
+                .build()
+
+            firebaseMessaging.send(message)
+        }
+    }
+
+    fun sendStorageStatusNotification(user: User) {
+        if(user.userSetting!!.storageNotificationEnabled) {
+            val message = Message.builder()
+                .setToken(user.fcmToken)
+                .putData("title", "저장공간 상태 알림")
+                .putData("body", "할당된 저장용량의 ${round((user.usedStorageSize / user.storageLimit) * 100.0)} 사용했습니다.")
+                .build()
             firebaseMessaging.send(message)
         }
     }

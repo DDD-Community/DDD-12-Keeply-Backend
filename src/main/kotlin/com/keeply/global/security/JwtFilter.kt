@@ -10,8 +10,6 @@ import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.GenericFilterBean
-import kotlin.text.startsWith
-import kotlin.text.substring
 
 class JwtFilter(
     private val jwtProvider: JwtProvider,

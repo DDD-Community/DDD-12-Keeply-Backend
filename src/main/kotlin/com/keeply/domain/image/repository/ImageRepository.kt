@@ -17,4 +17,5 @@ interface ImageRepository: JpaRepository<Image, Long> {
     """)
     fun deleteAllScheduledBefore(time: LocalDateTime): Int
     fun findAllByUserIdOrderByUpdatedAtDesc(userId: Long): List<Image>
+    fun findAllByScheduledDeleteAtBetween(start: LocalDateTime, end: LocalDateTime): List<Image>
 }
