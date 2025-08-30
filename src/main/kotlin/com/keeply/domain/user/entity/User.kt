@@ -2,12 +2,7 @@ package com.keeply.domain.user.entity
 
 import com.keeply.domain.folder.entity.Folder
 import com.keeply.global.entity.BaseTimeEntity
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Entity
-import jakarta.persistence.Id
-import jakarta.persistence.OneToMany
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import jakarta.persistence.*
 import java.time.LocalDateTime
 
 @Entity
@@ -45,7 +40,7 @@ class User(
         var profileImageUrl: String = ""
         var thumbnailImageUrl: String = ""
         var usedStorageSize: Long = 0
-        var storageLimit: Long = 0
+        var storageLimit: Long = 1L * 1024 * 1024 * 1024
         var fcmToken: String? = null
 
         fun id(id: Long) = apply { this.id = id }

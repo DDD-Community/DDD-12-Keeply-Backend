@@ -12,5 +12,9 @@ data class OcrRequestDTO(
         신규이미지 -> imageId = null,
         미분류이미지 -> imageId = {imageId}
     """)
-    val imageId: Long? = null
+    val imageId: Long? = null,
+    @Schema(description = """
+        OCR 스킵 후 cachedImageId만 받기 위한 isSkip
+    """)
+    val isSkip: Boolean,
 )

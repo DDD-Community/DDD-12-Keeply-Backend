@@ -1,11 +1,10 @@
 package com.keeply.global.redis
 
-import com.keeply.api.ocr.dto.OcrResponseDTO
 import com.keeply.global.redis.dto.CachedOcrImage
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.stereotype.Service
 import java.time.Duration
-import java.util.Base64
+import java.util.*
 
 @Service
 class RedisService(

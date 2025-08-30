@@ -10,15 +10,7 @@ import io.swagger.v3.oas.annotations.Operation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.annotation.AuthenticationPrincipal
-import org.springframework.web.bind.annotation.DeleteMapping
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PatchMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestPart
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
@@ -43,13 +35,19 @@ class ImageController (
         }
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
-    @PostMapping("/uncategorized")
-    @Operation(summary = "이미지 s3에 저장(이미지 미분류로 저장)")
+    @PostMapping("/save")
+    @Operation(summary = "ocr을 거치지 않은 이미지 저장",
+        description = """
+            미분류 이미지 folderId = null
+            폴더에 이미지 저장 folderId = {folderId}
+        """)
     fun saveImageWithoutFolder(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @RequestPart("file") file: MultipartFile
+        @RequestPart("file") file: MultipartFile,
+        @RequestParam("folderId", required = false) folderId: Long?,
     ): ResponseEntity<ApiResponse<ImageResponseDTO.SaveResponseDTO>> {
-        val apiResponse = imageService.saveUncategorizedImage(userDetails.userId, file)
+        val apiResponse = if(folderId==null) imageService.saveUncategorizedImage(userDetails.userId, file)
+        else imageService.saveImage(userDetails.userId, file, folderId)
         return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
     }
 

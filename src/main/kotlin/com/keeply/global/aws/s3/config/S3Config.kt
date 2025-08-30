@@ -11,10 +11,10 @@ import software.amazon.awssdk.services.s3.S3Client
 
 @Configuration
 class S3Config (
-    @Value("\${cloud.aws.credentials.accessKey}")
+    @Value("\${cloud.aws.credentials.accessKey:}")
     private val accessKey: String,
 
-    @Value("\${cloud.aws.credentials.secretKey}")
+    @Value("\${cloud.aws.credentials.secretKey:}")
     private val secretKey: String,
 
     @Value("\${cloud.aws.region.static}")
@@ -22,10 +22,16 @@ class S3Config (
 ) {
     @Bean
     fun s3Client(): S3Client {
-        val credentials = AwsBasicCredentials.create(accessKey, secretKey)
+        val credentialsProvider = if (accessKey.isNotBlank() && secretKey.isNotBlank()) {
+            StaticCredentialsProvider.create(
+                AwsBasicCredentials.create(accessKey, secretKey)
+            )
+        } else {
+            DefaultCredentialsProvider.create()
+        }
         return S3Client.builder()
             .region(Region.of(region))
-            .credentialsProvider(DefaultCredentialsProvider.create())
+            .credentialsProvider(credentialsProvider)
             .build()
     }
 }
