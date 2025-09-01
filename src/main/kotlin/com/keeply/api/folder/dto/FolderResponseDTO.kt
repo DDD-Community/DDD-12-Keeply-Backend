@@ -11,7 +11,7 @@ class FolderResponseDTO {
         @Schema(description = "폴더명")
         val folderName: String,
         @Schema(description = "폴더 색상 코드")
-        val color: String,
+        val folderColor: String,
         @Schema(description = "폴더내 이미지 개수")
         val imageCount: Int,
         @Schema(description = "폴더 최근 업데이트 시각")
@@ -32,9 +32,10 @@ class FolderResponseDTO {
         val presignedUrl: String? = null,
         @Schema(description = "이미지 인사이트")
         val insight: String? = null,
-        @Schema(description = "태그")
-        val tag: String? = null,
-        val tagColor: String? = null,
+        @Schema(description = "폴더명")
+        val folderName: String? = null,
+        @Schema(description = "폴더 색상")
+        val folderColor: String? = null,
         @Schema(description = "폴더 저장, 미분류 여부")
         val isCategorized: Boolean,
         @Schema(description = "미분류 이미지 삭제 예정 시각")

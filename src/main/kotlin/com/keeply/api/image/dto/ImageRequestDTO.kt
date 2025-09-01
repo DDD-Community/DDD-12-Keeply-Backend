@@ -29,11 +29,7 @@ class ImageRequestDTO {
         @Schema(description = """
             폴더 Id
         """)
-        val folderId: Long,
-        @Schema(description = """
-            태그
-        """)
-        val tag: String
+        val folderId: Long
     )
 
     data class MoveImageRequestDTO(

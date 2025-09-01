@@ -27,8 +27,6 @@ class HomeService(
                     ImageInfo(
                         imageId = image.id!!,
                         presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
-                        tag = image.tag?.name,
-                        insight = image.insight,
                         updatedAt = image.updatedAt
                     )
                 } else null
@@ -44,8 +42,6 @@ class HomeService(
                     ImageInfo(
                         imageId = image.id!!,
                         presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
-                        tag = image.tag?.name,
-                        insight = image.insight,
                         updatedAt = image.updatedAt,
                     )
                 } else null
@@ -60,7 +56,8 @@ class HomeService(
                 ImageInfo(
                     imageId = image.id!!,
                     presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
-                    tag = image.tag?.name,
+                    folderName = image.folder?.name,
+                    folderColor = image.folder?.color,
                     insight = image.insight,
                     updatedAt = image.updatedAt,
                 )
@@ -71,7 +68,7 @@ class HomeService(
                 FolderInfo(
                     folderId = folder.id!!,
                     folderName = folder.name,
-                    color = folder.color,
+                    folderColor = folder.color,
                     updatedAt = folder.updatedAt,
                     imageCount = folder.images.count()
                 )
@@ -83,8 +80,8 @@ class HomeService(
                 ImageInfo(
                     imageId = image.id!!,
                     presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
-                    tag = image.tag?.name,
-                    tagColor = image.folder!!.color,
+                    folderName = image.folder?.name,
+                    folderColor = image.folder?.color,
                     insight = image.insight,
                     updatedAt = image.updatedAt,
                 )

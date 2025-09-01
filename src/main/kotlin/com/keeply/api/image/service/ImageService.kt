@@ -8,8 +8,6 @@ import com.keeply.domain.folder.repository.FolderRepository
 import com.keeply.domain.image.entity.Image
 import com.keeply.domain.image.repository.ImageRepository
 import com.keeply.domain.image.service.ImageDomainService
-import com.keeply.domain.tag.entity.Tag
-import com.keeply.domain.tag.repository.TagRepository
 import com.keeply.domain.user.entity.User
 import com.keeply.domain.user.repository.UserRepository
 import com.keeply.global.aws.s3.S3Service
@@ -30,7 +28,6 @@ class ImageService (
     private val imageDomainService: ImageDomainService,
     private val folderRepository: FolderRepository,
     private val userRepository: UserRepository,
-    private val tagRepository: TagRepository,
     private val redisService: RedisService,
     private val s3Service: S3Service,
     private val imageValidator: ImageValidator
@@ -40,11 +37,9 @@ class ImageService (
         val cachedImageId = requestDTO.cachedImageId
         val imageInsight = requestDTO.imageInsight
         val folderId = requestDTO.folderId
-        val tagName = requestDTO.tag
 
         val folder = getFolder(userId, folderId)
         val user = getUser(userId)
-        val tag = getTag(tagName)
 
         val cachedOcrImage = redisService.getCachedImage(cachedImageId)
 
@@ -55,7 +50,6 @@ class ImageService (
             insight = imageInsight,
             user = user,
             folder = folder,
-            tag = tag,
             base64Image = base64Image,
         )
 
@@ -72,17 +66,13 @@ class ImageService (
         val imageId = requestDTO.imageId
         val imageInsight = requestDTO.imageInsight
         val folderId = requestDTO.folderId
-        val tagName = requestDTO.tag
 
         val folder = getFolder(userId, folderId)
 
         val image = getImage(imageId!!, userId)
 
-        val tag = getTag(tagName)
-
         image.insight = imageInsight
         image.folder = folder
-        image.tag = tag
         image.isCategorized = true
         image.scheduledDeleteAt = null
 
@@ -94,11 +84,6 @@ class ImageService (
         )
     }
 
-    private fun getTag(tagName: String): Tag = (tagRepository.findByName(tagName)
-        ?: tagRepository.save(
-            Tag.builder().name(tagName).build()
-        ))
-
     fun saveUncategorizedImage(userId: Long, file: MultipartFile): ApiResponse<ImageResponseDTO.SaveResponseDTO> {
         imageValidator.validateImage(file)
         val base64Image = Base64.getEncoder().encodeToString(file.bytes)
@@ -107,7 +92,6 @@ class ImageService (
             insight = null,
             user = user,
             folder = null,
-            tag = null,
             base64Image = base64Image,
         )
         image.isCategorized = false
@@ -129,7 +113,6 @@ class ImageService (
             insight = null,
             user = user,
             folder = folder,
-            tag = null,
             base64Image = base64Image,
         )
         return ApiResponse<ImageResponseDTO.SaveResponseDTO>(
@@ -164,7 +147,8 @@ class ImageService (
                 imageId = image.id!!,
                 presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
                 insight = image.insight,
-                tag = image.folder?.name,
+                folderName = image.folder?.name,
+                folderColor = image.folder?.color,
                 isCategorized = image.isCategorized,
                 scheduledDeleteAt = image.scheduledDeleteAt,
                 daysUntilDeletion = daysUntilDeletion
