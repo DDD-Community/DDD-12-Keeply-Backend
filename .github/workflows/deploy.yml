@@ -6,12 +6,12 @@ name: CI/CD with Gradle
 on:
   pull_request:
     branches: [ "develop" ]
+    types: [closed]
 
 
 # 워크 플로우가 깃 레포에 대한 권한을 읽기 만 가능하게 설정한다.
 permissions:
   contents: read
-
 
 # 워크플로우에서 할 작업 정의한다.
 jobs:
@@ -19,7 +19,7 @@ jobs:
   # 작업 환경 = 우분투 최신 버전
   build:
     runs-on: ubuntu-latest
-
+    if: github.event.pull_request.merged == true
     # 깃허브에서 제공하는 checkout 엑션 사용
     steps:
     - uses: actions/checkout@v3
