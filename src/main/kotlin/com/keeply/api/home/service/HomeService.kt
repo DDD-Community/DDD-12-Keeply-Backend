@@ -26,7 +26,7 @@ class HomeService(
                 if(image.folder == null) {
                     ImageInfo(
                         imageId = image.id!!,
-                        presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
+                        presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
                         updatedAt = image.updatedAt
                     )
                 } else null
@@ -41,7 +41,7 @@ class HomeService(
                 if(!image.isCategorized && image.scheduledDeleteAt!!.toLocalDate() == LocalDate.now()) {
                     ImageInfo(
                         imageId = image.id!!,
-                        presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
+                        presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
                         updatedAt = image.updatedAt,
                     )
                 } else null
@@ -55,7 +55,7 @@ class HomeService(
             .map{ image ->
                 ImageInfo(
                     imageId = image.id!!,
-                    presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
+                    presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
                     folderName = image.folder?.name,
                     folderColor = image.folder?.color,
                     insight = image.insight,
@@ -79,7 +79,7 @@ class HomeService(
             .map{ image ->
                 ImageInfo(
                     imageId = image.id!!,
-                    presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
+                    presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
                     folderName = image.folder?.name,
                     folderColor = image.folder?.color,
                     insight = image.insight,

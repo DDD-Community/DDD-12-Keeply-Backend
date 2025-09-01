@@ -42,10 +42,12 @@ class S3Service (
         s3Client.deleteObject(request)
     }
 
-    fun generatePresignedUrl(key: String): String {
+    fun generatePresignedUrl(s3Key: String?): String {
+        s3Key ?: throw IllegalStateException("s3Key is null")
+
         val getObjectRequest = GetObjectRequest.builder()
             .bucket(bucket)
-            .key(key)
+            .key(s3Key)
             .build()
 
         val presignRequest = GetObjectPresignRequest.builder()

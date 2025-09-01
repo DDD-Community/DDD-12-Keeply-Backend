@@ -145,7 +145,7 @@ class ImageService (
             success = true,
             response = ImageResponseDTO.ImageInfoDTO(
                 imageId = image.id!!,
-                presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
+                presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
                 insight = image.insight,
                 folderName = image.folder?.name,
                 folderColor = image.folder?.color,
