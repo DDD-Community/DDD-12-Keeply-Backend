@@ -40,10 +40,13 @@ jobs:
         # 환경변수 파일 생성
         echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/credentials/vision.json" > .env
         echo "FIREBASE_CREDENTIAL_JSON_PATH=$HOME/credentials/firebase.json" >> .env
-    
-        # 서버로 전송
-        scp -i private_key.pem -o StrictHostKeyChecking=no vision.json firebase.json .env ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/credentials/
-
+        
+    - name: Upload credentials artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: credentials
+        path: |
+          .env
         
     - name: Create application.yml
       run: |
@@ -121,15 +124,18 @@ jobs:
         name: keeply
         path: build/libs/
 
-    # EC2에 배포
-    # EC2 SSH 키를 private_key.pem 파일로 저장 ( 위치는 GitHub 서버 )
-    # SCP를 사용하여 JAR 파일을 EC2 서버로 복사
-    # SSH를 사용하여 EC2 서버에 연결하고 현재 실행 중인 Java 프로세스를 종료한 다음 새로운 Java 프로세스 생성 및 실행!!
-    ## NLP 적용하면 IP -> 도메인으로 수정 + EC2 늘리면 run 추가
+    
+    - name: Download credentials
+      uses: actions/download-artifact@v4
+      with:
+        name: credentials
+        path: ./credentials
+    
     - name: Deploy to EC2
       run: |
-        echo "${{ secrets.EC2_SSH_KEY }}" > private_key.pem
+        echo "${{ secrets.EC2_SSH_KEY }}" | tr -d '\r' > private_key.pem
         chmod 600 private_key.pem
         scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/keeply-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/keeply-0.0.1-SNAPSHOT.jar
+        scp -i private_key.pem -o StrictHostKeyChecking=no ./credentials/* ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/credentials/
         ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "pgrep java | xargs -r kill -9; /home/${{ secrets.EC2_USERNAME }}/deploy.sh"
         rm -f private_key.pem
