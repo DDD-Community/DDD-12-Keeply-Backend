@@ -7,13 +7,13 @@ class FolderRequestDTO{
         @Schema(description = "폴더명")
         val folderName: String,
         @Schema(description = "폴더 색상 코드")
-        val color: String
+        val folderColor: String
     )
     data class UpdateRequestDTO (
         @Schema(description = "폴더명")
         val folderName: String,
         @Schema(description = "폴더 색상 코드")
-        val color: String
+        val folderColor: String
     )
     data class GetFoldersRequestDTO(
         @Schema(description = "폴더 검색 키워드")

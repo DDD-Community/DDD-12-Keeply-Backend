@@ -3,7 +3,6 @@ package com.keeply.domain.image.service
 import com.keeply.domain.folder.entity.Folder
 import com.keeply.domain.image.entity.Image
 import com.keeply.domain.image.repository.ImageRepository
-import com.keeply.domain.tag.entity.Tag
 import com.keeply.domain.user.entity.User
 import com.keeply.global.aws.s3.S3Service
 import com.keeply.global.fcm.service.FcmService
@@ -18,13 +17,12 @@ class ImageDomainService(
     private val s3Service: S3Service,
     private val fcmService: FcmService
 ) {
-    fun saveImage(insight: String?, user: User, folder: Folder?, tag: Tag?, base64Image: String): Image{
+    fun saveImage(insight: String?, user: User, folder: Folder?, base64Image: String): Image{
 
         val image = Image.builder()
             .insight(insight)
             .user(user)
             .folder(folder)
-            .tag(tag)
             .build()
         imageRepository.save(image)
 

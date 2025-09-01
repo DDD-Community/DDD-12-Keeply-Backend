@@ -33,7 +33,7 @@ class FolderService (
         folderValidator.validateCreate(requestDTO)
 
         val folderName = requestDTO.folderName
-        val color = requestDTO.color
+        val folderColor = requestDTO.folderColor
 
         val user = getUser(userId)
             ?: throw Exception("존재하지 않는 유저입니다.")
@@ -42,7 +42,7 @@ class FolderService (
 
         folder = Folder.builder()
             .name(setFolderName(folderName,userId))
-            .color(color)
+            .color(folderColor)
             .user(user)
             .build()
 
@@ -53,7 +53,7 @@ class FolderService (
             response = FolderResponseDTO.Folder(
                 folderId = folder.id!!,
                 folderName = folder.name,
-                color = folder.color,
+                folderColor = folder.color,
                 imageCount = folder.images.size,
                 updatedAt = folder.updatedAt,
                 isDuplicate = folder.name != folderName,
@@ -98,10 +98,10 @@ class FolderService (
         val result = folder.images.map { image ->
             FolderResponseDTO.ImageInfo(
                 imageId = image.id!!,
-                presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
+                presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
                 insight = image.insight,
-                tag = image.folder?.name,
-                tagColor = image.folder!!.color,
+                folderName = folder.name,
+                folderColor = folder.color,
                 isCategorized = image.isCategorized,
                 scheduledDeleteAt = image.scheduledDeleteAt,
                 updatedAt = image.updatedAt
@@ -120,17 +120,21 @@ class FolderService (
         val images = getImages(userId)
 
         val result = images.map { image ->
-            val daysUntilDeletion = Duration.between(LocalDateTime.now(), image.scheduledDeleteAt).toDays()
+            val scheduled = image.scheduledDeleteAt
+            val daysUntilDeletion = scheduled?.let {
+                val d = Duration.between(LocalDateTime.now(), it).toDays()
+                if (d < 0) 0 else d
+            }
             FolderResponseDTO.ImageInfo(
-                image.id!!,
-                s3Service.generatePresignedUrl(image.s3Key!!),
-                image.insight,
-                image.folder?.name,
-                null,
-                image.isCategorized,
-                image.scheduledDeleteAt,
-                daysUntilDeletion,
-                image.updatedAt
+                imageId = image.id!!,
+                presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
+                insight = image.insight,
+                folderName = null,
+                folderColor = null,
+                isCategorized = image.isCategorized,
+                scheduledDeleteAt = image.scheduledDeleteAt,
+                daysUntilDeletion = daysUntilDeletion,
+                updatedAt = image.updatedAt
             )
         }
 
@@ -148,7 +152,7 @@ class FolderService (
         folderValidator.validateUpdate(requestDTO)
         val folder = getFolderByUserIdAndFolderId(userId, folderId)
         folder.name = setFolderName(requestDTO.folderName, userId)
-        folder.color = requestDTO.color
+        folder.color = requestDTO.folderColor
         return ApiResponse<FolderResponseDTO.Folder>(
             success = true,
             response = FolderResponseDTO.Folder(
@@ -194,8 +198,10 @@ class FolderService (
         folderRepository.findByUserIdAndName(userId, folderName)
 
 
-    private fun getUser(userId: Long): User? =
-        userRepository.findById(userId).get()
+    private fun getUser(userId: Long): User =
+        userRepository.findById(userId).orElse(
+            throw NoSuchElementException("존재하지 않는 유저의 Id입니다.")
+        )
 
     private fun setFolderName(folderName: String, userId: Long): String {
         val existFolderNames = folderRepository.findAllNamesByUserIdAndFolderName(userId, folderName)

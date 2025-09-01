@@ -24,8 +24,10 @@ class ImageResponseDTO {
         val presignedUrl: String? = null,
         @Schema(description = "이미지 인사이트")
         val insight: String? = null,
-        @Schema(description = "태그")
-        val tag: String? = null,
+        @Schema(description = "폴더명")
+        val folderName: String? = null,
+        @Schema(description = "폴더 색상")
+        val folderColor: String? = null,
         @Schema(description = "폴더 저장, 미분류 여부")
         val isCategorized: Boolean,
         @Schema(description = "미분류 이미지 삭제 예정 시각")
