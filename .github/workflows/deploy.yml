@@ -35,9 +35,9 @@ jobs:
     - name: Create credentials
       run: |
         mkdir -p credentials
-        echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON_BASE64 }}" | base64 --decode > credentials/vision.json
-        echo "${{ secrets.FIREBASE_CREDENTIAL_JSON_BASE64 }}" | base64 --decode > credentials/firebase.json
-    
+        printf "%s" "${{ secrets.FIREBASE_CREDENTIAL_JSON_BASE64 }}" | base64 --decode > credentials/firebase.json
+        printf "%s" "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON_BASE64 }}" | base64 --decode > credentials/vision.json
+
     - name: Upload credentials artifact
       uses: actions/upload-artifact@v4
       with:
