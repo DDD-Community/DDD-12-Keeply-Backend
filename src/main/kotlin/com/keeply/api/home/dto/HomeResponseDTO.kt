@@ -18,8 +18,8 @@ data class HomeResponseDTO(
 data class ImageInfo(
     val imageId: Long,
     val presignedUrl: String,
-    val tag: String? = null,
-    val tagColor: String? = null,
+    val folderName: String? = null,
+    val folderColor: String? = null,
     val insight: String? = null,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val updatedAt: LocalDateTime? = null,
@@ -28,7 +28,7 @@ data class ImageInfo(
 data class FolderInfo(
     val folderId: Long,
     val folderName: String,
-    val color: String,
+    val folderColor: String,
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     val updatedAt: LocalDateTime? = null,
     val imageCount: Int

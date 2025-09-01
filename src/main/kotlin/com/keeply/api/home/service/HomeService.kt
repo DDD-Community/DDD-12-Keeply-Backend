@@ -26,9 +26,7 @@ class HomeService(
                 if(image.folder == null) {
                     ImageInfo(
                         imageId = image.id!!,
-                        presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
-                        tag = image.tag?.name,
-                        insight = image.insight,
+                        presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
                         updatedAt = image.updatedAt
                     )
                 } else null
@@ -40,12 +38,10 @@ class HomeService(
         var scheduledToDeleteImageList: List<ImageInfo> = imagesOrderByUpdatedAtDesc
             .mapNotNull{
                 image ->
-                if(!image.isCategorized && image.scheduledDeleteAt!!.toLocalDate() == LocalDate.now()) {
+                if(!image.isCategorized && image.scheduledDeleteAt?.toLocalDate() == LocalDate.now()) {
                     ImageInfo(
                         imageId = image.id!!,
-                        presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
-                        tag = image.tag?.name,
-                        insight = image.insight,
+                        presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
                         updatedAt = image.updatedAt,
                     )
                 } else null
@@ -59,8 +55,9 @@ class HomeService(
             .map{ image ->
                 ImageInfo(
                     imageId = image.id!!,
-                    presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
-                    tag = image.tag?.name,
+                    presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
+                    folderName = image.folder?.name,
+                    folderColor = image.folder?.color,
                     insight = image.insight,
                     updatedAt = image.updatedAt,
                 )
@@ -71,7 +68,7 @@ class HomeService(
                 FolderInfo(
                     folderId = folder.id!!,
                     folderName = folder.name,
-                    color = folder.color,
+                    folderColor = folder.color,
                     updatedAt = folder.updatedAt,
                     imageCount = folder.images.count()
                 )
@@ -82,9 +79,9 @@ class HomeService(
             .map{ image ->
                 ImageInfo(
                     imageId = image.id!!,
-                    presignedUrl = s3Service.generatePresignedUrl(image.s3Key!!),
-                    tag = image.tag?.name,
-                    tagColor = image.folder!!.color,
+                    presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
+                    folderName = image.folder?.name,
+                    folderColor = image.folder?.color,
                     insight = image.insight,
                     updatedAt = image.updatedAt,
                 )
