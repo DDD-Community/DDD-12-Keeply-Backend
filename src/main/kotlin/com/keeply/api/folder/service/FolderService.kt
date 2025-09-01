@@ -120,7 +120,11 @@ class FolderService (
         val images = getImages(userId)
 
         val result = images.map { image ->
-            val daysUntilDeletion = Duration.between(LocalDateTime.now(), image.scheduledDeleteAt).toDays()
+            val scheduled = image.scheduledDeleteAt
+            val daysUntilDeletion = scheduled?.let {
+                val d = Duration.between(LocalDateTime.now(), it).toDays()
+                if (d < 0) 0 else d
+            }
             FolderResponseDTO.ImageInfo(
                 imageId = image.id!!,
                 presignedUrl = s3Service.generatePresignedUrl(image.s3Key),
