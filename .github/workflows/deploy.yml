@@ -44,10 +44,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: credentials
-        path: |
-          $HOME/credentials/vision.json
-          $HOME/credentials/firebase.json
-          $HOME/credentials/.env
+        path: $HOME/credentials
         
     - name: Create application.yml
       run: |
