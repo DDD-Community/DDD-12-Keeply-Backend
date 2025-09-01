@@ -45,9 +45,9 @@ jobs:
       with:
         name: credentials
         path: |
-          vision.json
-          firebase.json
-          .env
+          $HOME/credentials/vision.json
+          $HOME/credentials/firebase.json
+          $HOME/credentials/.env
         
     - name: Create application.yml
       run: |
