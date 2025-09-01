@@ -32,14 +32,14 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         
-    - name: Create And Upload credentials
+    - name: Create credentials
       run: |
-        mkdir -p $HOME/credentials
-        echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}" > $HOME/credentials/vision.json
-        echo "${{ secrets.FIREBASE_CREDENTIAL_JSON }}" > $HOME/credentials/firebase.json
-        echo "GOOGLE_APPLICATION_CREDENTIALS=$HOME/credentials/vision.json" > $HOME/credentials/.env
-        echo "FIREBASE_CREDENTIAL_JSON_PATH=$HOME/credentials/firebase.json" >> $HOME/credentials/.env
-        
+        mkdir -p credentials
+        echo "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_JSON }}" > credentials/vision.json
+        echo "${{ secrets.FIREBASE_CREDENTIAL_JSON }}" > credentials/firebase.json
+        echo "GOOGLE_APPLICATION_CREDENTIALS=credentials/vision.json" > credentials/.env
+        echo "FIREBASE_CREDENTIAL_JSON_PATH=credentials/firebase.json" >> credentials/.env
+    
     - name: Upload credentials artifact
       uses: actions/upload-artifact@v4
       with:
