@@ -198,8 +198,10 @@ class FolderService (
         folderRepository.findByUserIdAndName(userId, folderName)
 
 
-    private fun getUser(userId: Long): User? =
-        userRepository.findById(userId).get()
+    private fun getUser(userId: Long): User =
+        userRepository.findById(userId).orElse(
+            throw NoSuchElementException("존재하지 않는 유저의 Id입니다.")
+        )
 
     private fun setFolderName(folderName: String, userId: Long): String {
         val existFolderNames = folderRepository.findAllNamesByUserIdAndFolderName(userId, folderName)
