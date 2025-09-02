@@ -40,5 +40,5 @@ out/
 .kotlin
 
 *.properties
-*.yml
+application.yml
 *.db
