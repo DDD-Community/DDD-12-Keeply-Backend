@@ -1,1 +1,48 @@
-spring.application.name=keeply
+spring:
+  application:
+    name: keeply
+  datasource:
+    url: jdbc:h2:./data/keeply-db
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: update   # 스키마 자동 업데이트
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  jackson:
+    date-format: yyyy-MM-dd'T'HH:mm:ss
+    time-zone: Asia/Seoul
+    serialization:
+      WRITE_DATES_AS_TIMESTAMPS: false
+
+cloud:
+  aws:
+    region:
+      static: ap-northeast-2
+
+
+    s3:
+      bucket: keeply-s3-bucket
+
+#kakao:
+#  client:
+#    id: 5aaaa5bc68e0ff4071da1a4cc772e695
+#    secret: 2622bfcc7f0d3ab872d0d350c0676b79
+
+jwt:
+  secret: thisIsASecretKeyWithEnoughLength123!
+  access-token:
+    expiration: 999999999999999
+#    expiration: 3600
+  refresh-token:
+    expiration: 1209600  # 3600 * 24 * 14
