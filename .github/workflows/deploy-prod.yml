@@ -47,47 +47,7 @@ jobs:
       - name: Create application.yml
         run: |
           mkdir -p src/main/resources
-          echo "
-          spring:
-            application:
-              name: keeply
-            datasource:
-              url: jdbc:h2:file:./data/keeply-db;DB_CLOSE_ON_EXIT=FALSE
-              driver-class-name: org.h2.Driver
-              username: sa
-              password:
-            h2:
-              console:
-                enabled: true
-            jpa:
-              hibernate:
-                ddl-auto: update
-              properties:
-                hibernate:
-                  dialect: org.hibernate.dialect.H2Dialect
-            data:
-              redis:
-                host: localhost
-                port: 6379
-            jackson:
-              date-format: yyyy-MM-dd'T'HH:mm:ss
-              time-zone: Asia/Seoul
-              serialization:
-                WRITE_DATES_AS_TIMESTAMPS: false
-          cloud:
-            aws:
-              region:
-                static: ap-northeast-2
-              s3:
-                bucket: keeply-s3-bucket
-          jwt:
-            secret: ${{ secrets.JWT_SECRET }}
-            access-token:
-              expiration: 999999999999999
-            refresh-token:
-              expiration: 1209600
-          " > src/main/resources/application.yml
-      
+          echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
 
       # gradle wrapper 파일에 실행 권한을 부여
       # gradle wrapper = 개발자가 특정 버전의 Gradle을 미리 설치하지 않고도 Gradle 빌드를 실행할 수 있게 해주는 편리한 도구
