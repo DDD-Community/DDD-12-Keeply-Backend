@@ -18,10 +18,6 @@ class ImageValidator {
             throw IllegalArgumentException("folderId는 0보다 커야 합니다.")
         }
 
-        if (request.tag.isBlank()) {
-            throw IllegalArgumentException("태그는 비어 있을 수 없습니다.")
-        }
-
         if (request.isCached) {
             if (request.cachedImageId.isNullOrBlank()) {
                 throw IllegalArgumentException("isCached가 true일 경우 cachedImageId는 필수입니다.")
