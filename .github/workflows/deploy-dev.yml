@@ -131,7 +131,7 @@ jobs:
         run: |
           echo "${{ secrets.EC2_SSH_KEY }}" | tr -d '\r' > private_key.pem
           chmod 600 private_key.pem
-          scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/keeply-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/keeply-0.0.1-SNAPSHOT.jar
+          scp -i private_key.pem -o StrictHostKeyChecking=no build/libs/keeply-0.0.1-SNAPSHOT.jar ${{ secrets.EC2_USERNAME }}@${{ secrets.DEV_EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/keeply-0.0.1-SNAPSHOT.jar
           scp -i private_key.pem -o StrictHostKeyChecking=no ./credentials/* ${{ secrets.EC2_USERNAME }}@${{ secrets.DEV_EC2_HOST }}:/home/${{ secrets.EC2_USERNAME }}/credentials/
-          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.EC2_HOST }} "pgrep java | xargs -r kill -9; /home/${{ secrets.EC2_USERNAME }}/deploy.sh"
+          ssh -i private_key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USERNAME }}@${{ secrets.DEV_EC2_HOST }} "pgrep java | xargs -r kill -9; /home/${{ secrets.EC2_USERNAME }}/deploy.sh"
           rm -f private_key.pem
