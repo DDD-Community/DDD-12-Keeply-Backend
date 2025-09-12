@@ -3,18 +3,22 @@ package com.keeply.api.image.controller
 import com.keeply.api.image.dto.ImageRequestDTO
 import com.keeply.api.image.dto.ImageResponseDTO
 import com.keeply.api.image.service.ImageService
-import com.keeply.global.dto.ApiResponse
-import com.keeply.global.dto.Message
+import com.keeply.global.api.ApiResponse
+import com.keeply.global.api.dto.Message
 import com.keeply.global.security.CustomUserDetails
 import io.swagger.v3.oas.annotations.Operation
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Positive
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 
 @RestController
 @RequestMapping("/api/images")
+@Validated
 class ImageController (
     private val imageService: ImageService
 ) {
@@ -26,14 +30,14 @@ class ImageController (
     )
     fun saveImage(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @RequestBody requestDTO: ImageRequestDTO.SaveRequestDTO
-    ): ResponseEntity<ApiResponse<ImageResponseDTO.SaveResponseDTO>> {
+        @Valid @RequestBody requestDTO: ImageRequestDTO.SaveRequestDTO
+    ): ApiResponse<ImageResponseDTO.SaveResponseDTO> {
         val apiResponse = if (requestDTO.isCached) {
             imageService.saveCachedImage(userDetails.userId, requestDTO)
         } else {
             imageService.setFolderOfImage(userDetails.userId, requestDTO)
         }
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
+        return apiResponse
     }
     @PostMapping("/save")
     @Operation(summary = "ocr을 거치지 않은 이미지 저장",
@@ -43,42 +47,42 @@ class ImageController (
         """)
     fun saveImageWithoutFolder(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @RequestPart("file") file: MultipartFile,
-        @RequestParam("folderId", required = false) folderId: Long?,
-    ): ResponseEntity<ApiResponse<ImageResponseDTO.SaveResponseDTO>> {
+        @RequestPart("file") @NotNull file: MultipartFile,
+        @RequestParam("folderId", required = false) @Positive folderId: Long?,
+    ): ApiResponse<ImageResponseDTO.SaveResponseDTO> {
         val apiResponse = if(folderId==null) imageService.saveUncategorizedImage(userDetails.userId, file)
         else imageService.saveImage(userDetails.userId, file, folderId)
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
+        return apiResponse
     }
 
     @PatchMapping("/{imageId}")
     @Operation(summary = "이미지를 다른 폴더로 이동")
     fun moveImageToAnotherFolder(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @PathVariable imageId: Long,
+        @PathVariable @Positive imageId: Long,
         @RequestBody requestDTO: ImageRequestDTO.MoveImageRequestDTO
-    ): ResponseEntity<ApiResponse<ImageResponseDTO.MoveImageResponseDTO>> {
+    ): ApiResponse<ImageResponseDTO.MoveImageResponseDTO> {
         val apiResponse = imageService.moveImage(userDetails.userId, imageId, requestDTO)
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
+        return apiResponse
     }
 
     @GetMapping("/{imageId}")
     @Operation(summary = "단일 이미지 조회 API")
     fun getImage(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @PathVariable imageId: Long,
-    ): ResponseEntity<ApiResponse<ImageResponseDTO.ImageInfoDTO>> {
+        @PathVariable @Positive imageId: Long,
+    ): ApiResponse<ImageResponseDTO.ImageInfoDTO> {
         val apiResponse = imageService.getImageInfo(userDetails.userId, imageId)
-        return ResponseEntity.ok(apiResponse)
+        return apiResponse
     }
 
     @DeleteMapping("/{imageId}")
     @Operation(summary = "이미지 삭제 API")
     fun deleteImage(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @PathVariable imageId: Long
-    ): ResponseEntity<ApiResponse<Message>> {
+        @PathVariable @Positive imageId: Long
+    ): ApiResponse<Message> {
         val apiResponse = imageService.deleteImage(userDetails.userId, imageId)
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
+        return apiResponse
     }
 }

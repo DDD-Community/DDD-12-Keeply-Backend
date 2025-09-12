@@ -1,6 +1,8 @@
 package com.keeply.api.image.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Positive
 
 class ImageRequestDTO {
     data class SaveRequestDTO(
@@ -21,6 +23,7 @@ class ImageRequestDTO {
             신규 이미지 -> imageId = null
             미분류 이미지 -> imageId = {imageId}
         """)
+        @Positive
         val imageId: Long? = null,
         @Schema(description = """
             이미지와 함께 저장하려는 텍스트
@@ -29,11 +32,13 @@ class ImageRequestDTO {
         @Schema(description = """
             폴더 Id
         """)
+        @Positive
         val folderId: Long
     )
 
     data class MoveImageRequestDTO(
         @Schema(description = "폴더")
+        @Positive
         val folderId: Long
     )
 }

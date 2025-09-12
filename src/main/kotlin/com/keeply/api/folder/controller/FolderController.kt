@@ -3,17 +3,21 @@ package com.keeply.api.folder.controller
 import com.keeply.api.folder.dto.FolderRequestDTO
 import com.keeply.api.folder.dto.FolderResponseDTO
 import com.keeply.api.folder.service.FolderService
-import com.keeply.global.dto.ApiResponse
-import com.keeply.global.dto.Message
+import com.keeply.global.api.ApiResponse
+import com.keeply.global.api.dto.Message
+import com.keeply.global.api.exception.folder.InvalidFolderIdException
 import com.keeply.global.security.CustomUserDetails
 import io.swagger.v3.oas.annotations.Operation
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
+import jakarta.validation.Valid
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.Positive
 import org.springframework.security.core.annotation.AuthenticationPrincipal
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api/folders")
+@Validated
 class FolderController (
     private val folderService: FolderService
 ) {
@@ -21,10 +25,10 @@ class FolderController (
     @Operation(summary = "폴더 생성 API")
     fun createFolder(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @RequestBody requestDTO: FolderRequestDTO.CreateRequestDTO
-    ): ResponseEntity<ApiResponse<FolderResponseDTO.Folder>> {
+        @Valid @RequestBody requestDTO: FolderRequestDTO.CreateRequestDTO
+    ): ApiResponse<FolderResponseDTO.Folder> {
         val apiResponse = folderService.createFolder(userDetails.userId, requestDTO)
-        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse)
+        return apiResponse
     }
 
     @GetMapping
@@ -34,31 +38,33 @@ class FolderController (
         @RequestParam(required = false) keyword: String?,
         @RequestParam(required = false, defaultValue = "updatedAt") sortBy: String,
         @RequestParam(required = false, defaultValue = "desc") orderBy: String,
-    ): ResponseEntity<ApiResponse<FolderResponseDTO.FolderList>> {
+    ): ApiResponse<FolderResponseDTO.FolderList> {
         val requestDTO = FolderRequestDTO.GetFoldersRequestDTO(
             keyword = keyword,
             sortBy = sortBy,
             orderBy = orderBy
         )
         val apiResponse = folderService.getFolders(userDetails.userId, requestDTO)
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
+        return apiResponse
     }
 
     @GetMapping("/{folderId}")
-    @Operation(summary = "folderId로 폴더의 이미지 리스트 검색, 미분류 이미지 리스트 검색 API",
-        description = "폴더 검색시 folderId, 미분류 이미지 검색시, folderId = \"uncategorized\"")
+    @Operation(summary = "folderId로 폴더의 이미지 리스트 검색 API")
     fun getFolderImages(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @PathVariable folderId: String
-    ): ResponseEntity<ApiResponse<FolderResponseDTO.FolderImages>> {
-        val apiResponse = if (folderId == "uncategorized") {
-            folderService.getUncategorizedImages(userDetails.userId)
-        } else {
-            val parsedFolderId = folderId.toLongOrNull()
-                ?: throw Exception("유효하지 않은 folderId입니다.")
-            folderService.getFolderImages(userDetails.userId, parsedFolderId)
-        }
-        return ResponseEntity.ok(apiResponse)
+        @PathVariable(required = true) @Positive folderId: Long
+    ): ApiResponse<FolderResponseDTO.FolderImages> {
+        val apiResponse = folderService.getFolderImages(userDetails.userId, folderId)
+        return apiResponse
+    }
+
+    @GetMapping("/uncategorized")
+    @Operation(summary = "미분류 이미지 리스트 검색 API")
+    fun getUncategorizedImages(
+        @AuthenticationPrincipal userDetails: CustomUserDetails,
+    ): ApiResponse<FolderResponseDTO.FolderImages> {
+        val apiResponse = folderService.getUncategorizedImages(userDetails.userId)
+        return apiResponse
     }
 
 
@@ -66,20 +72,20 @@ class FolderController (
     @Operation(summary = "폴더 수정 API")
     fun updateFolder(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @PathVariable folderId: Long,
+        @PathVariable @Positive folderId: Long,
         @RequestBody requestDTO : FolderRequestDTO.UpdateRequestDTO
-    ): ResponseEntity<ApiResponse<FolderResponseDTO.Folder>> {
+    ): ApiResponse<FolderResponseDTO.Folder> {
         val apiResponse = folderService.updateFolder(userDetails.userId, folderId, requestDTO)
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
+        return apiResponse
     }
 
     @DeleteMapping("/{folderId}")
     @Operation(summary = "폴더 삭제 API")
     fun deleteFolder(
         @AuthenticationPrincipal userDetails: CustomUserDetails,
-        @PathVariable folderId: Long
-    ): ResponseEntity<ApiResponse<Message>> {
+        @PathVariable @Positive folderId: Long
+    ): ApiResponse<Message> {
         val apiResponse = folderService.deleteFolder(userDetails.userId, folderId)
-        return ResponseEntity.status(HttpStatus.OK).body(apiResponse)
+        return apiResponse
     }
 }

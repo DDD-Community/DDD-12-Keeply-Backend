@@ -4,10 +4,12 @@ import com.keeply.api.ocr.dto.OcrRequestDTO
 import com.keeply.api.ocr.dto.OcrResponseDTO
 import com.keeply.api.ocr.validator.OcrValidator
 import com.keeply.domain.image.repository.ImageRepository
+import com.keeply.global.api.ApiResponse
+import com.keeply.global.api.exception.image.ImageNotFoundException
 import com.keeply.global.aws.s3.S3Service
 import com.keeply.global.common.googlevision.GoogleVisionAPI
-import com.keeply.global.dto.ApiResponse
 import com.keeply.global.redis.RedisService
+import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
@@ -36,9 +38,9 @@ class OcrService(
 
         redisService.cacheImage(cachedImageId, imageBytes, detectedText)
 
-        return ApiResponse(
-            success = true,
-            response = OcrResponseDTO(cachedImageId, detectedText)
+        return ApiResponse.success(
+            HttpStatus.OK,
+            OcrResponseDTO(cachedImageId, detectedText)
         )
     }
 
@@ -46,15 +48,15 @@ class OcrService(
         ocrValidator.validateAnalyzeRequest(requestDTO)
         val imageId = requestDTO.imageId
         val image = imageRepository.findImageByIdAndUserId(imageId!!,userId)
-            ?: throw Exception("imgaeId에 해당하는 이미지를 찾을 수 없습니다.")
+            ?: throw ImageNotFoundException()
 
         val file = s3Service.getMultipartFileFromS3(image.s3Key!!)
 
         val detectedText = googleVisionAPI.extractTextFromImage(file)
 
-        return ApiResponse<OcrResponseDTO>(
-            success = true,
-            response = OcrResponseDTO(
+        return ApiResponse.success(
+            HttpStatus.OK,
+            OcrResponseDTO(
                 detectedText = detectedText
             )
         )
